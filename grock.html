@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptMall — AI Prompt Library</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #FF2E93;
+      --purple: #7B2CBF;
+      --night: #12121a;
+      --line: #e8e6ef;
+      --paper: #ffffff;
+      --ink: #12121a;
+      --muted: #6b6878;
+      --surface: #f8f7fc;
+    }
+    body.dark {
+      --line: #2c2a38;
+      --paper: #1c1b26;
+      --ink: #f4f3f8;
+      --muted: #a09db0;
+      --surface: #16151f;
+      background: #0f0e16;
+      color: var(--ink);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background: #fff;
+      color: var(--ink);
+      transition: background .3s, color .3s;
+      overflow-x: hidden;
+    }
+    .display { font-family: "Outfit", sans-serif; letter-spacing: -0.03em; }
+    .page { display: none; animation: fadeUp .4s ease both; }
+    .page.active { display: block; }
+    .surface {
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    .soft { color: var(--muted); }
+    .nav-link {
+      color: var(--muted);
+      font-size: .875rem;
+      font-weight: 600;
+      transition: color .2s;
+      cursor: pointer;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--pink); }
+    .pink-btn {
+      background: linear-gradient(135deg, #FF2E93, #e91e8c);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(255,46,147,.28);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .pink-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255,46,147,.38);
+    }
+    .icon-btn {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      transition: all .2s;
+    }
+    .icon-btn:hover {
+      border-color: var(--pink);
+      transform: translateY(-1px);
+    }
+    .hero {
+      background: #0f0e16;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background: linear-gradient(120deg, rgba(15,14,22,.94), rgba(15,14,22,.7));
+    }
+    .hero-art {
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .55;
+    }
+    .orb {
+      position: absolute;
+      width: 32rem;
+      height: 32rem;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,46,147,.32), transparent 70%);
+      filter: blur(40px);
+      right: -12rem;
+      top: -16rem;
+    }
+    .prompt-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 1.25rem;
+      transition: transform .3s, box-shadow .3s, border-color .3s;
+    }
+    .prompt-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(18,18,26,.12);
+      border-color: rgba(255,46,147,.35);
+    }
+    .dark .prompt-card:hover {
+      box-shadow: 0 20px 40px rgba(0,0,0,.35);
+    }
+    .prompt-card img { transition: transform .6s ease; }
+    .prompt-card:hover img { transform: scale(1.06); }
+    .tag {
+      background: rgba(123,44,191,.1);
+      color: #6d259f;
+    }
+    .dark .tag {
+      background: rgba(203,143,255,.15);
+      color: #dbafff;
+    }
+    .category-card {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      transition: all .25s;
+    }
+    .category-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--pink);
+      box-shadow: 0 12px 28px rgba(255,46,147,.12);
+    }
+    .filter-chip {
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--paper);
+      transition: all .2s;
+    }
+    .filter-chip.selected, .filter-chip:hover {
+      color: #fff;
+      background: var(--night);
+      border-color: var(--night);
+    }
+    .dark .filter-chip.selected, .dark .filter-chip:hover {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+    .quick-cat-row { scrollbar-width: thin; }
+    .quick-cat-row::-webkit-scrollbar { height: 5px; }
+    .quick-cat-row::-webkit-scrollbar-thumb {
+      background: rgba(255,46,147,.3);
+      border-radius: 3px;
+    }
+    .quick-cat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      white-space: nowrap;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 999px;
+      padding: .55rem 1rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s;
+      scroll-snap-align: start;
+    }
+    .quick-cat-chip:hover {
+      transform: translateY(-2px);
+      border-color: var(--pink);
+      color: var(--ink);
+    }
+    .quick-cat-chip.selected {
+      background: var(--night);
+      color: #fff;
+      border-color: var(--night);
+    }
+    .dark .quick-cat-chip.selected {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+    .quick-cat-count {
+      background: rgba(123,44,191,.12);
+      color: #6d259f;
+      border-radius: 999px;
+      padding: .1rem .45rem;
+      font-size: .68rem;
+      font-weight: 700;
+    }
+    .dark .quick-cat-count {
+      background: rgba(203,143,255,.18);
+      color: #dbafff;
+    }
+    .quick-cat-chip.selected .quick-cat-count {
+      background: rgba(255,255,255,.22);
+      color: #fff;
+    }
+    .form-control {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: .75rem;
+      padding: .75rem 1rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-control:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(255,46,147,.12);
+    }
+    .toast {
+      transform: translateY(140%);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.22,1,.36,1);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .liked {
+      color: var(--pink) !important;
+      border-color: rgba(255,46,147,.4) !important;
+    }
+    .mobile-menu { display: none; }
+    .mobile-menu.open { display: block; }
+    .hidden-state { display: none !important; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 767px) {
+      .desktop-nav { display: none; }
+      .hero-title { font-size: 2.6rem !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 border-b backdrop-blur-xl" style="background:color-mix(in srgb,var(--paper) 90%,transparent);border-color:var(--line)">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
+        <button type="button" class="flex items-center gap-2.5" onclick="showPage('home')">
+          <span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background:linear-gradient(135deg,#FF2E93,#7B2CBF)">
+            <i data-lucide="sparkles" class="h-5 w-5"></i>
+          </span>
+          <span class="text-xl font-bold tracking-tight" style="color:var(--ink)">PromptMall</span>
+        </button>
+
+        <div class="desktop-nav flex items-center gap-6">
+          <button class="nav-link active" onclick="showPage('home')">Home</button>
+          <button class="nav-link" onclick="showPage('explore')">Explore</button>
+          <button class="nav-link" onclick="openFiltered('Image')">Image</button>
+          <button class="nav-link" onclick="openFiltered('Video')">Video</button>
+          <button class="nav-link" onclick="showPage('categories')">Categories</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" class="icon-btn grid h-10 w-10 place-items-center rounded-xl" onclick="showPage('explore');document.getElementById('explore-search').focus()">
+            <i data-lucide="search" class="h-[18px] w-[18px]"></i>
+          </button>
+          <button type="button" class="desktop-nav icon-btn grid h-10 w-10 place-items-center rounded-xl" onclick="showPage('favorites')">
+            <i data-lucide="heart" class="h-[18px] w-[18px]"></i>
+          </button>
+          <button type="button" class="desktop-nav icon-btn grid h-10 w-10 place-items-center rounded-xl" onclick="toggleTheme()">
+            <i data-lucide="moon" id="theme-icon" class="h-[18px] w-[18px]"></i>
+          </button>
+          <button type="button" class="desktop-nav pink-btn rounded-xl px-4 py-2.5 text-sm font-semibold" onclick="showPage('submit')">
+            Submit Prompt
+          </button>
+          <button type="button" class="desktop-nav overflow-hidden rounded-xl border-2" style="border-color:var(--paper)" onclick="showPage('profile')">
+            <img loading="lazy" class="h-9 w-9 object-cover" src="https://images.pexels.com/photos/33261955/pexels-photo-33261955.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Profile">
+          </button>
+          <button type="button" class="icon-btn grid h-10 w-10 place-items-center rounded-xl md:hidden" onclick="toggleMenu()">
+            <i data-lucide="menu" class="h-[19px] w-[19px]"></i>
+          </button>
+        </div>
+      </nav>
+
+      <div id="mobile-menu" class="mobile-menu border-t px-5 py-4" style="border-color:var(--line);background:var(--paper)">
+        <div class="grid gap-1.5">
+          <button class="rounded-xl px-3 py-2.5 text-left font-semibold" onclick="showPage('home');toggleMenu()">Home</button>
+          <button class="rounded-xl px-3 py-2.5 text-left font-semibold" onclick="showPage('explore');toggleMenu()">Explore Prompts</button>
+          <button class="rounded-xl px-3 py-2.5 text-left font-semibold" onclick="showPage('favorites');toggleMenu()">Your Favorites</button>
+          <button class="pink-btn rounded-xl px-3 py-2.5 text-left font-semibold" onclick="showPage('submit');toggleMenu()">Submit Prompt</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="home" class="page active">
+        <section class="hero mx-4 mt-4 rounded-[1.75rem] sm:mx-6">
+          <img loading="lazy" class="hero-art" src="https://images.pexels.com/photos/11032525/pexels-photo-11032525.jpeg?auto=compress&cs=tinysrgb&w=1920" alt="Hero background">
+          <div class="orb"></div>
+          <div class="relative mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 sm:py-28">
+            <div class="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur">
+              <span class="h-1.5 w-1.5 rounded-full bg-pink-400"></span>
+              Discover powerful AI prompts
+            </div>
+            <h1 class="display hero-title mx-auto max-w-4xl text-5xl font-bold leading-[1.08] text-white sm:text-6xl lg:text-7xl">
+              Create Better With<br>The Right Prompt
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-7 text-white/65 sm:text-lg">
+              Thousands of carefully curated prompts for AI images, videos, photography, design & more.
+            </p>
+            <form class="mx-auto mt-9 flex max-w-2xl gap-2 rounded-2xl border border-white/15 bg-white/10 p-1.5 backdrop-blur-xl" onsubmit="runHeroSearch(event)">
+              <label class="sr-only" for="hero-search">Search</label>
+              <i data-lucide="search" class="ml-3 mt-3 h-5 w-5 text-white/50"></i>
+              <input id="hero-search" class="min-w-0 flex-1 bg-transparent px-2 py-3 text-white outline-none placeholder:text-white/40" type="search" placeholder="Search prompts, styles, categories...">
+              <button class="pink-btn rounded-xl px-5 py-3 text-sm font-semibold" type="submit">Search</button>
+            </form>
+            <div class="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm">
+              <span class="mr-1 text-white/50">Popular:</span>
+              <button class="rounded-full border border-white/15 px-3 py-1.5 text-white/80 hover:bg-white/10 transition" onclick="openFiltered('Cinematic')">Cinematic</button>
+              <button class="rounded-full border border-white/15 px-3 py-1.5 text-white/80 hover:bg-white/10 transition" onclick="openFiltered('Portrait')">Portrait</button>
+              <button class="rounded-full border border-white/15 px-3 py-1.5 text-white/80 hover:bg-white/10 transition" onclick="openFiltered('Anime')">Anime</button>
+              <button class="rounded-full border border-white/15 px-3 py-1.5 text-white/80 hover:bg-white/10 transition" onclick="openFiltered('Product')">Product</button>
+              <button class="rounded-full border border-white/15 px-3 py-1.5 text-white/80 hover:bg-white/10 transition" onclick="openFiltered('Fashion')">Fashion</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Categories -->
+        <section class="mx-auto max-w-7xl px-5 pt-12 sm:px-6">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="soft text-xs font-semibold uppercase tracking-wider">Quick Categories</h3>
+            <button class="text-sm font-semibold" style="color:var(--pink)" onclick="resetQuickCategory()">Clear</button>
+          </div>
+          <div id="quick-category-slider" class="quick-cat-row flex gap-2 overflow-x-auto pb-2" style="scroll-snap-type:x proximity"></div>
+        </section>
+
+        <!-- Featured -->
+        <section class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+          <div class="mb-7 flex items-end justify-between gap-4">
+            <div>
+              <h2 class="display text-3xl font-bold sm:text-4xl" style="color:var(--ink)">Featured Prompts</h2>
+              <p id="featured-subtitle" class="soft mt-1.5">Hand-picked prompts to inspire your next creation.</p>
+            </div>
+            <button class="hidden text-sm font-semibold sm:block" style="color:var(--pink)" onclick="showPage('explore')">View all →</button>
+          </div>
+          <div id="featured-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </section>
+
+        <!-- Categories -->
+        <section class="border-y py-16" style="border-color:var(--line);background:color-mix(in srgb,var(--paper) 92%,#f5edff)">
+          <div class="mx-auto max-w-7xl px-5 sm:px-6">
+            <div class="mb-7">
+              <h2 class="display text-3xl font-bold sm:text-4xl" style="color:var(--ink)">Explore By Category</h2>
+              <p class="soft mt-1.5">Find the visual language that fits your next idea.</p>
+            </div>
+            <div id="category-grid" class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"></div>
+          </div>
+        </section>
+
+        <!-- Trending -->
+        <section class="mx-auto max-w-7xl px-5 py-16 sm:px-6">
+          <div class="mb-7 flex items-center justify-between">
+            <div>
+              <h2 class="display text-3xl font-bold sm:text-4xl" style="color:var(--ink)">Trending This Week</h2>
+              <p class="soft mt-1.5">The prompts creators are using right now.</p>
+            </div>
+            <i data-lucide="trending-up" style="color:var(--pink)"></i>
+          </div>
+          <div id="trending-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"></div>
+        </section>
+      </section>
+
+      <!-- EXPLORE -->
+      <section id="explore" class="page">
+        <div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+          <div class="mb-7">
+            <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Explore Prompts</h1>
+            <p class="soft mt-2">A curated library for your next extraordinary output.</p>
+          </div>
+          <div class="surface mb-5 flex flex-col gap-3 rounded-2xl p-4 lg:flex-row lg:items-center">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="absolute left-3 top-3 h-5 w-5 soft"></i>
+              <input id="explore-search" class="form-control pl-10" type="search" oninput="renderExplore()" placeholder="Search the prompt library...">
+            </div>
+            <select id="category-select" class="form-control lg:w-52" onchange="renderExplore()"></select>
+            <select id="sort-select" class="form-control lg:w-44" onchange="renderExplore()">
+              <option>Popular</option>
+              <option>Newest</option>
+              <option>Most Copied</option>
+            </select>
+          </div>
+          <div id="filter-row" class="mb-7 flex flex-wrap gap-2">
+            <button class="filter-chip selected rounded-full px-4 py-2 text-sm font-semibold" data-filter="All" onclick="setFilter(this)">All</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Image" onclick="setFilter(this)">Image</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Video" onclick="setFilter(this)">Video</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Popular" onclick="setFilter(this)">Popular</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Latest" onclick="setFilter(this)">Latest</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Free" onclick="setFilter(this)">Free</button>
+            <button class="filter-chip rounded-full px-4 py-2 text-sm font-semibold" data-filter="Premium" onclick="setFilter(this)">Premium</button>
+          </div>
+          <div id="explore-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+          <div class="mt-10 flex justify-center gap-2">
+            <button class="icon-btn rounded-xl px-3 py-2" onclick="toast('You are already on the first page')"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+            <button class="pink-btn rounded-xl px-4 py-2 font-semibold">1</button>
+            <button class="icon-btn rounded-xl px-4 py-2 font-semibold" onclick="toast('Demo library has one page')">2</button>
+            <button class="icon-btn rounded-xl px-3 py-2" onclick="toast('Demo library has one page')"><i data-lucide="chevron-right" class="h-5 w-5"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CATEGORIES -->
+      <section id="categories" class="page">
+        <div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+          <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Every idea starts somewhere.</h1>
+          <p class="soft mt-2">Explore thousands of ready-to-use creative directions.</p>
+          <div id="category-page-grid" class="mt-9 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"></div>
+        </div>
+      </section>
+
+      <!-- DETAIL -->
+      <section id="detail" class="page">
+        <div class="mx-auto max-w-7xl px-5 py-10 sm:px-6">
+          <button class="mb-6 inline-flex items-center gap-2 text-sm font-semibold soft hover:text-pink-500" onclick="showPage('explore')">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i> Back to explore
+          </button>
+          <div class="grid gap-8 lg:grid-cols-[1.1fr_.9fr]">
+            <div class="overflow-hidden rounded-2xl bg-[var(--night)]">
+              <img id="detail-image" loading="lazy" class="h-[28rem] w-full object-cover sm:h-[36rem]" src="https://images.pexels.com/photos/14440801/pexels-photo-14440801.jpeg?auto=compress&cs=tinysrgb&w=1280" alt="Prompt preview">
+            </div>
+            <div class="flex flex-col justify-center">
+              <div class="flex items-center justify-between">
+                <span id="detail-category" class="tag rounded-full px-3 py-1 text-sm font-semibold">Cinematic · Image</span>
+                <span class="soft text-sm">Prompt ID · PM-1042</span>
+              </div>
+              <h1 id="detail-title" class="display mt-4 text-4xl font-bold leading-tight sm:text-5xl" style="color:var(--ink)">Cinematic Rain Portrait</h1>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="tag rounded-full px-3 py-1.5 text-sm">Cinematic</span>
+                <span class="tag rounded-full px-3 py-1.5 text-sm">Portrait</span>
+                <span class="tag rounded-full px-3 py-1.5 text-sm">Neon</span>
+              </div>
+              <div class="mt-6 flex items-center gap-3">
+                <img loading="lazy" class="h-11 w-11 rounded-full object-cover" src="https://images.pexels.com/photos/33261955/pexels-photo-33261955.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Author">
+                <div>
+                  <p class="text-sm font-semibold" style="color:var(--ink)">Arjun Mehta</p>
+                  <p class="soft text-xs">Visual prompt creator</p>
+                </div>
+              </div>
+              <div class="mt-6 flex gap-3">
+                <button id="detail-like" type="button" class="icon-btn flex items-center gap-2 rounded-xl px-4 py-3 font-semibold" onclick="likeButton(this)">
+                  <i data-lucide="heart" class="h-5 w-5"></i>
+                  <span id="detail-likes">2.4k</span>
+                </button>
+                <button class="icon-btn flex items-center gap-2 rounded-xl px-4 py-3 font-semibold" onclick="sharePrompt()">Share</button>
+              </div>
+              <button type="button" class="pink-btn mt-5 flex items-center justify-center gap-2 rounded-xl px-5 py-4 font-semibold" onclick="copyDetail(this)">
+                <i data-lucide="copy" class="h-5 w-5"></i>
+                <span data-copy-label>Copy Prompt</span>
+                <span data-copied-label class="hidden-state">✓ Copied!</span>
+              </button>
+              <div class="mt-3 grid grid-cols-2 gap-3">
+                <button class="icon-btn rounded-xl px-3 py-3 text-sm font-semibold" onclick="toast('Prompt ready for ChatGPT')">Use in ChatGPT</button>
+                <button class="icon-btn rounded-xl px-3 py-3 text-sm font-semibold" onclick="toast('Prompt ready for Gemini')">Use in Gemini</button>
+              </div>
+            </div>
+          </div>
+
+          <section class="mt-10">
+            <h2 class="display text-2xl font-bold" style="color:var(--ink)">The Prompt</h2>
+            <div id="prompt-text" class="surface mt-4 rounded-2xl p-6 font-mono text-sm leading-7 soft"></div>
+          </section>
+
+          <section class="mt-10 rounded-2xl border p-6 sm:p-8" style="border-color:rgba(123,44,191,.22);background:linear-gradient(135deg,rgba(255,46,147,.06),rgba(123,44,191,.05))">
+            <h2 class="display text-3xl font-bold" style="color:var(--ink)">Customize This Prompt</h2>
+            <p class="soft mt-1.5">Fine-tune the ingredients and make this prompt yours.</p>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-subject">Subject</label>
+                <input id="builder-subject" class="form-control" value="Young Indian man" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-style">Style</label>
+                <input id="builder-style" class="form-control" value="Cinematic" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-location">Location</label>
+                <input id="builder-location" class="form-control" value="Mumbai at night" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-lighting">Lighting</label>
+                <input id="builder-lighting" class="form-control" value="Neon" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-camera">Camera</label>
+                <input id="builder-camera" class="form-control" value="85mm" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-mood">Mood</label>
+                <input id="builder-mood" class="form-control" value="Dramatic" oninput="updateBuilder()">
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="builder-ratio">Aspect Ratio</label>
+                <select id="builder-ratio" class="form-control" onchange="updateBuilder()">
+                  <option>16:9</option>
+                  <option>1:1</option>
+                  <option>4:5</option>
+                  <option>9:16</option>
+                </select>
+              </div>
+            </div>
+            <h3 class="mt-7 text-lg font-semibold" style="color:var(--ink)">Generated Prompt</h3>
+            <div id="generated-prompt" class="surface mt-3 rounded-xl p-5 leading-7"></div>
+            <button class="pink-btn mt-4 rounded-xl px-5 py-3 font-semibold" onclick="copyGenerated()">Copy Final Prompt</button>
+          </section>
+        </div>
+      </section>
+
+      <!-- FAVORITES -->
+      <section id="favorites" class="page">
+        <div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+          <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Your Favorites</h1>
+          <p class="soft mt-2">Your personal vault of creative starting points.</p>
+          <div id="favorites-grid" class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+          <div id="favorites-empty" class="surface mt-9 rounded-2xl px-6 py-16 text-center">
+            <i data-lucide="heart" class="mx-auto h-10 w-10" style="color:var(--pink)"></i>
+            <p class="soft mt-4">Save prompts you love and find them here later.</p>
+            <button class="pink-btn mt-6 rounded-xl px-5 py-3 font-semibold" onclick="showPage('explore')">Explore Prompts</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUBMIT -->
+      <section id="submit" class="page">
+        <div class="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+          <div id="submit-form-wrap">
+            <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Share your best prompt.</h1>
+            <p class="soft mt-2">Help the community create something remarkable.</p>
+            <form class="surface mt-8 rounded-2xl p-6 sm:p-8" onsubmit="submitPrompt(event)">
+              <div class="grid gap-5">
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold" for="submit-title">Prompt Title</label>
+                  <input id="submit-title" class="form-control" required>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold" for="submit-description">Short Description</label>
+                  <textarea id="submit-description" class="form-control min-h-24" required></textarea>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold" for="submit-prompt">Your Prompt</label>
+                  <textarea id="submit-prompt" class="form-control min-h-36" required></textarea>
+                </div>
+                <div class="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label class="mb-1.5 block text-sm font-semibold" for="submit-category">Category</label>
+                    <select id="submit-category" class="form-control"></select>
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-sm font-semibold" for="submit-type">Prompt Type</label>
+                    <select id="submit-type" class="form-control">
+                      <option>Image</option>
+                      <option>Video</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold" for="submit-tags">Tags</label>
+                  <input id="submit-tags" class="form-control" placeholder="e.g. Cinematic, Neon, Portrait">
+                </div>
+                <div>
+                  <label class="mb-1.5 block text-sm font-semibold" for="submit-upload">Preview Image</label>
+                  <input id="submit-upload" class="form-control" type="file" accept="image/*">
+                </div>
+                <button class="pink-btn rounded-xl px-5 py-4 font-semibold" type="submit">Submit Prompt</button>
+              </div>
+            </form>
+          </div>
+          <div id="submit-success" class="hidden-state surface mt-9 rounded-2xl p-12 text-center">
+            <div class="mx-auto grid h-16 w-16 place-items-center rounded-full text-white" style="background:linear-gradient(135deg,#FF2E93,#7B2CBF)">
+              <i data-lucide="check" class="h-8 w-8"></i>
+            </div>
+            <h2 class="display mt-6 text-3xl font-bold" style="color:var(--ink)">Submitted for review!</h2>
+            <p class="soft mt-2">Your prompt has been submitted successfully.</p>
+            <button class="pink-btn mt-6 rounded-xl px-5 py-3 font-semibold" onclick="resetSubmit()">Submit Another</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="profile" class="page">
+        <div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Welcome back, Aziz 👋</h1>
+              <p class="soft mt-2">Here’s your creative activity at a glance.</p>
+            </div>
+            <img loading="lazy" class="h-16 w-16 rounded-2xl object-cover" src="https://images.pexels.com/photos/33261955/pexels-photo-33261955.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Avatar">
+          </div>
+          <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="surface rounded-2xl p-5">
+              <p class="soft text-sm font-medium">Saved Prompts</p>
+              <p class="mt-1.5 text-3xl font-bold">24</p>
+            </div>
+            <div class="surface rounded-2xl p-5">
+              <p class="soft text-sm font-medium">Created Prompts</p>
+              <p class="mt-1.5 text-3xl font-bold">08</p>
+            </div>
+            <div class="surface rounded-2xl p-5">
+              <p class="soft text-sm font-medium">Total Copies</p>
+              <p class="mt-1.5 text-3xl font-bold">12.8k</p>
+            </div>
+            <div class="surface rounded-2xl p-5">
+              <p class="soft text-sm font-medium">Likes</p>
+              <p class="mt-1.5 text-3xl font-bold">1.4k</p>
+            </div>
+          </div>
+          <div class="mt-10 grid gap-8 lg:grid-cols-3">
+            <div>
+              <h2 class="text-lg font-semibold" style="color:var(--ink)">Recent Favorites</h2>
+              <div id="dashboard-favs" class="mt-4 grid gap-3"></div>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold" style="color:var(--ink)">My Prompts</h2>
+              <div id="dashboard-prompts" class="mt-4 grid gap-3"></div>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold" style="color:var(--ink)">Recently Viewed</h2>
+              <div id="dashboard-viewed" class="mt-4 grid gap-3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 border-t" style="border-color:var(--line);background:var(--night);color:#fff">
+      <div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          <div class="lg:col-span-2">
+            <button type="button" class="flex items-center gap-2.5" onclick="showPage('home')">
+              <span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background:linear-gradient(135deg,#FF2E93,#7B2CBF)">
+                <i data-lucide="sparkles" class="h-5 w-5"></i>
+              </span>
+              <span class="text-xl font-bold">PromptMall</span>
+            </button>
+            <p class="mt-4 max-w-xs text-sm leading-6 text-white/50">Your curated home for powerful creative AI prompts.</p>
+          </div>
+          <div>
+            <h2 class="font-semibold">Product</h2>
+            <div class="mt-4 grid gap-2.5 text-sm text-white/50">
+              <button onclick="showPage('explore')" class="text-left hover:text-white transition">Explore</button>
+              <button onclick="showPage('favorites')" class="text-left hover:text-white transition">Favorites</button>
+              <button onclick="showPage('submit')" class="text-left hover:text-white transition">Submit Prompt</button>
+            </div>
+          </div>
+          <div>
+            <h2 class="font-semibold">Explore</h2>
+            <div class="mt-4 grid gap-2.5 text-sm text-white/50">
+              <button onclick="openFiltered('Image')" class="text-left hover:text-white transition">Image Prompts</button>
+              <button onclick="openFiltered('Video')" class="text-left hover:text-white transition">Video Prompts</button>
+              <button onclick="showPage('categories')" class="text-left hover:text-white transition">All Categories</button>
+            </div>
+          </div>
+          <div>
+            <h2 class="font-semibold">Company</h2>
+            <div class="mt-4 grid gap-2.5 text-sm text-white/50">
+              <button onclick="toast('About PromptMall')" class="text-left hover:text-white transition">About</button>
+              <button onclick="toast('Contact support@promptmall.demo')" class="text-left hover:text-white transition">Contact</button>
+              <button onclick="toast('Privacy details coming soon')" class="text-left hover:text-white transition">Privacy</button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-5 border-t pt-6" style="border-color:rgba(255,255,255,.1)">
+          <p class="text-sm text-white/40">© 2026 PromptMall. All rights reserved.</p>
+          <div class="flex gap-4">
+            <button class="text-white/45 hover:text-white transition" onclick="toast('Instagram')"><i data-lucide="instagram" class="h-5 w-5"></i></button>
+            <button class="text-white/45 hover:text-white transition" onclick="toast('X / Twitter')">𝕏</button>
+            <button class="text-white/45 hover:text-white transition" onclick="toast('YouTube')"><i data-lucide="youtube" class="h-5 w-5"></i></button>
+            <button class="text-white/45 hover:text-white transition" onclick="toast('GitHub')"><i data-lucide="github" class="h-5 w-5"></i></button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-2xl" style="background:var(--night)">
+    <i data-lucide="check-circle" class="h-5 w-5" style="color:#ff76ba"></i>
+    <span id="toast-text"></span>
+  </div>
+
+  <script>
+    const promptText = "Create an ultra-realistic cinematic portrait of a young man standing on a rainy city street at night, dramatic neon lighting, shallow depth of field, realistic skin texture, professional photography, 85mm lens, cinematic color grading.";
+    const prompts = [
+      {id:"rain",title:"Cinematic Rain Portrait",type:"Image",category:"Cinematic",description:"A moody neon-lit urban portrait with filmic texture.",tags:["Cinematic","Portrait","Neon"],author:"Arjun Mehta",likes:"2.4k",copies:"8.9k",img:"https://images.pexels.com/photos/14440801/pexels-photo-14440801.jpeg?auto=compress&cs=tinysrgb&w=800"},
+      {id:"luxury",title:"Luxury Product Photography",type:"Image",category:"Business",description:"Luxury campaign lighting for high-end product imagery.",tags:["Product","Studio","Gold"],author:"Maya Shah",likes:"1.8k",copies:"6.1k",img:"https://images.pexels.com/photos/37127787/pexels-photo-37127787.jpeg?auto=compress&cs=tinysrgb&w=800"},
+      {id:"city",title:"Futuristic Cyberpunk City",type:"Video",category:"Cinematic",description:"Electric skyline vistas for futuristic worldbuilding.",tags:["Cyberpunk","City","Video"],author:"Leo Martin",likes:"3.1k",copies:"11.2k",img:"https://images.pexels.com/photos/32660203/pexels-photo-32660203.jpeg?auto=compress&cs=tinysrgb&w=800"},
+      {id:"wedding",title:"Indian Wedding Portrait",type:"Image",category:"Photography",description:"Regal bridal portraiture with rich tradition and light.",tags:["Wedding","India","Portrait"],author:"Naina Kapoor",likes:"2.7k",copies:"7.4k",img:"https://images.pexels.com/photos/32170148/pexels-photo-32170148.jpeg?auto=compress&cs=tinysrgb&w=800"},
+      {id:"anime",title:"Anime Character Design",type:"Image",category:"Anime",description:"Vivid character direction with expressive colour and mood.",tags:["Anime","Character","Art"],author:"Kai Mori",likes:"4.2k",copies:"15.7k",img:"https://images.pexels.com/photos/4208443/pexels-photo-4208443.jpeg?auto=compress&cs=tinysrgb&w=800"},
+      {id:"minimal",title:"Minimal Product Ad",type:"Image",category:"Business",description:"Clean commercial compositions made for modern brands.",tags:["Minimal","Ad","Product"],author:"Zara Khan",likes:"1.5k",copies:"5.6k",img:"https://images.pexels.com/photos/8015461/pexels-photo-8015461.jpeg?auto=compress&cs=tinysrgb&w=800"}
+    ];
+    const categories = [
+      ["🎨","Image Prompts","12,400"],["🎬","Video Prompts","3,280"],["📸","Photography","6,890"],
+      ["🎥","Cinematic","4,120"],["👗","Fashion","2,450"],["🏠","Architecture","1,980"],
+      ["🎭","Anime","3,720"],["🚗","Cars","1,240"],["🍔","Food","2,010"],
+      ["🌄","Travel","2,890"],["💼","Business","1,670"],["📱","Social Media","4,560"]
+    ];
+
+    let currentFilter = "All";
+    let quickCategory = "All";
+    const saved = () => JSON.parse(localStorage.getItem("promptmall-favs") || "[]");
+    const setSaved = x => localStorage.setItem("promptmall-favs", JSON.stringify(x));
+
+    function matchesCategory(p, name) {
+      if (name === "All" || name === "All Categories") return true;
+      if (name === "Image Prompts") return p.type === "Image";
+      if (name === "Video Prompts") return p.type === "Video";
+      return p.category === name;
+    }
+
+    function showPage(id) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      document.querySelectorAll(".nav-link").forEach(x => x.classList.remove("active"));
+      if (id === "favorites") renderFavorites();
+      if (id === "profile") renderDashboard();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleMenu() {
+      document.getElementById("mobile-menu").classList.toggle("open");
+    }
+
+    function card(p) {
+      const fav = saved().includes(p.id);
+      return `<article class="prompt-card">
+        <button class="block h-52 w-full overflow-hidden text-left" onclick="openDetail('${p.id}')">
+          <img src="${p.img}" alt="${p.title}" class="h-full w-full object-cover">
+        </button>
+        <div class="p-5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="tag rounded-full px-2.5 py-1 text-xs font-semibold">${p.type}</span>
+            <button class="icon-btn grid h-8 w-8 place-items-center rounded-lg ${fav ? "liked" : ""}" onclick="toggleFavorite('${p.id}',this)">
+              <i data-lucide="heart" class="h-4 w-4"></i>
+            </button>
+          </div>
+          <button class="mt-3.5 text-left text-lg font-semibold leading-tight hover:opacity-75" onclick="openDetail('${p.id}')">${p.title}</button>
+          <p class="soft mt-2 text-sm leading-5">${p.description}</p>
+          <div class="mt-3.5 flex flex-wrap gap-1.5">${p.tags.map(t => `<span class="tag rounded-md px-2 py-1 text-xs">${t}</span>`).join("")}</div>
+          <div class="mt-4 flex items-center justify-between border-t pt-3.5 text-xs soft" style="border-color:var(--line)">
+            <span>by ${p.author}</span>
+            <span class="flex items-center gap-1"><i data-lucide="heart" class="h-3.5 w-3.5"></i>${p.likes}</span>
+          </div>
+          <button class="pink-btn mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold" onclick="copyPrompt('${p.id}')">
+            <i data-lucide="copy" class="h-4 w-4"></i>Copy Prompt
+          </button>
+        </div>
+      </article>`;
+    }
+
+    function refreshIcons() { lucide.createIcons(); }
+
+    function renderQuickCategories() {
+      const chips = [{ emoji: "✨", name: "All" }, ...categories.map(c => ({ emoji: c[0], name: c[1] }))];
+      document.getElementById("quick-category-slider").innerHTML = chips.map(c => {
+        const count = c.name === "All" ? prompts.length : prompts.filter(p => matchesCategory(p, c.name)).length;
+        return `<button class="quick-cat-chip ${quickCategory === c.name ? "selected" : ""}" onclick="selectQuickCategory('${c.name}')">
+          <span class="text-base">${c.emoji}</span><span>${c.name}</span><span class="quick-cat-count">${count}</span>
+        </button>`;
+      }).join("");
+    }
+
+    function selectQuickCategory(name) {
+      quickCategory = name;
+      renderQuickCategories();
+      renderFeatured();
+      refreshIcons();
+    }
+
+    function resetQuickCategory() { selectQuickCategory("All"); }
+
+    function renderFeatured() {
+      const items = prompts.filter(p => matchesCategory(p, quickCategory));
+      document.getElementById("featured-grid").innerHTML = items.length
+        ? items.map(card).join("")
+        : `<p class="soft col-span-full py-12 text-center">No featured prompts in "${quickCategory}" yet.</p>`;
+      document.getElementById("featured-subtitle").textContent = quickCategory === "All"
+        ? "Hand-picked prompts to inspire your next creation."
+        : `Showing ${items.length} prompt${items.length === 1 ? "" : "s"} in "${quickCategory}".`;
+      refreshIcons();
+    }
+
+    function populateCategorySelects() {
+      const opts = ['<option>All Categories</option>', ...categories.map(c => `<option>${c[1]}</option>`)].join("");
+      document.getElementById("category-select").innerHTML = opts;
+      document.getElementById("submit-category").innerHTML = categories.map(c => `<option>${c[1]}</option>`).join("");
+    }
+
+    function renderExplore() {
+      const term = document.getElementById("explore-search").value.toLowerCase();
+      const cat = document.getElementById("category-select").value;
+      let items = prompts.filter(p =>
+        (currentFilter === "All" || currentFilter === "Popular" || currentFilter === "Latest" || currentFilter === "Free" || currentFilter === "Premium" || p.type === currentFilter) &&
+        matchesCategory(p, cat) &&
+        (p.title + " " + p.description + " " + p.tags.join(" ")).toLowerCase().includes(term)
+      );
+      document.getElementById("explore-grid").innerHTML = items.map(card).join("") || `<p class="soft col-span-full py-12 text-center">No prompts match your search.</p>`;
+      refreshIcons();
+    }
+
+    function renderCategories() {
+      const markup = categories.map(c => `
+        <button class="category-card rounded-2xl p-5 text-left" onclick="openFiltered('${c[1]}')">
+          <span class="text-2xl">${c[0]}</span>
+          <div class="mt-4 flex items-end justify-between">
+            <div>
+              <p class="font-semibold">${c[1]}</p>
+              <p class="soft mt-1 text-xs">${c[2]} prompts</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="h-4 w-4" style="color:var(--pink)"></i>
+          </div>
+        </button>`).join("");
+      document.getElementById("category-grid").innerHTML = markup;
+      document.getElementById("category-page-grid").innerHTML = markup;
+      refreshIcons();
+    }
+
+    function renderTrending() {
+      document.getElementById("trending-grid").innerHTML = prompts.slice(0, 5).map((p, i) => `
+        <button class="prompt-card text-left" onclick="openDetail('${p.id}')">
+          <div class="relative h-40 overflow-hidden">
+            <img src="${p.img}" alt="${p.title}" class="h-full w-full object-cover">
+            <span class="absolute left-3 top-3 rounded-lg px-2 py-1 text-sm font-semibold text-white" style="background:var(--pink)">#${i + 1}</span>
+          </div>
+          <div class="p-4">
+            <p class="font-semibold">${p.title}</p>
+            <p class="soft mt-1.5 text-xs">${p.copies} copies · ${p.likes} likes</p>
+          </div>
+        </button>`).join("");
+    }
+
+    function setFilter(el) {
+      currentFilter = el.dataset.filter;
+      document.querySelectorAll(".filter-chip").forEach(x => x.classList.remove("selected"));
+      el.classList.add("selected");
+      renderExplore();
+    }
+
+    function openFiltered(filter) {
+      showPage("explore");
+      const catNames = categories.map(c => c[1]);
+      if (filter === "Image" || filter === "Video") {
+        document.getElementById("explore-search").value = "";
+        document.getElementById("category-select").value = filter === "Image" ? "Image Prompts" : "Video Prompts";
+      } else if (catNames.includes(filter)) {
+        document.getElementById("explore-search").value = "";
+        document.getElementById("category-select").value = filter;
+      } else {
+        document.getElementById("explore-search").value = filter;
+        document.getElementById("category-select").value = "All Categories";
+      }
+      renderExplore();
+    }
+
+    function openDetail(id) {
+      showPage("detail");
+      const p = prompts.find(x => x.id === id) || prompts[0];
+      document.getElementById("detail-title").textContent = p.title;
+      document.getElementById("detail-category").textContent = p.category + " · " + p.type;
+      document.getElementById("detail-image").src = p.img;
+      document.getElementById("detail-image").alt = p.title;
+      document.getElementById("prompt-text").textContent = promptText;
+      updateBuilder();
+    }
+
+    function copyText(text, msg) {
+      navigator.clipboard?.writeText(text).then(() => toast(msg)).catch(() => toast(msg));
+    }
+    function copyPrompt(id) { copyText(promptText, "Prompt copied to clipboard"); }
+    function copyDetail(btn) {
+      copyText(promptText, "Prompt copied to clipboard");
+      btn.querySelector("[data-copy-label]").classList.add("hidden-state");
+      btn.querySelector("[data-copied-label]").classList.remove("hidden-state");
+      setTimeout(() => {
+        btn.querySelector("[data-copy-label]").classList.remove("hidden-state");
+        btn.querySelector("[data-copied-label]").classList.add("hidden-state");
+      }, 1700);
+    }
+    function copyGenerated() { copyText(document.getElementById("generated-prompt").textContent, "Final prompt copied"); }
+
+    function toast(msg) {
+      document.getElementById("toast-text").textContent = msg;
+      const t = document.getElementById("toast");
+      t.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+    }
+
+    function likeButton(btn) {
+      btn.classList.toggle("liked");
+      document.getElementById("detail-likes").textContent = btn.classList.contains("liked") ? "2.5k" : "2.4k";
+    }
+    function sharePrompt() { copyText("Check out this prompt on PromptMall", "Share link copied"); }
+
+    function toggleFavorite(id, el) {
+      let list = saved();
+      list = list.includes(id) ? list.filter(x => x !== id) : [...list, id];
+      setSaved(list);
+      if (el) el.classList.toggle("liked");
+      toast(list.includes(id) ? "Saved to favourites" : "Removed from favourites");
+    }
+
+    function renderFavorites() {
+      const items = prompts.filter(p => saved().includes(p.id));
+      document.getElementById("favorites-grid").innerHTML = items.map(card).join("");
+      document.getElementById("favorites-empty").classList.toggle("hidden-state", items.length > 0);
+      refreshIcons();
+    }
+
+    function updateBuilder() {
+      const v = id => document.getElementById(id).value;
+      document.getElementById("generated-prompt").textContent =
+        `Create an ultra-realistic ${v("builder-style").toLowerCase()} portrait of a ${v("builder-subject")} in ${v("builder-location")}, ${v("builder-lighting").toLowerCase()} lighting, ${v("builder-mood").toLowerCase()} mood, professional photography, ${v("builder-camera")} lens, cinematic colour grading, ${v("builder-ratio")} aspect ratio.`;
+    }
+
+    function runHeroSearch(e) {
+      e.preventDefault();
+      showPage("explore");
+      document.getElementById("explore-search").value = document.getElementById("hero-search").value;
+      document.getElementById("category-select").value = "All Categories";
+      renderExplore();
+    }
+
+    function submitPrompt(e) {
+      e.preventDefault();
+      document.getElementById("submit-form-wrap").classList.add("hidden-state");
+      document.getElementById("submit-success").classList.remove("hidden-state");
+      refreshIcons();
+    }
+
+    function resetSubmit() {
+      document.querySelector("#submit form").reset();
+      document.getElementById("submit-success").classList.add("hidden-state");
+      document.getElementById("submit-form-wrap").classList.remove("hidden-state");
+    }
+
+    function mini(p) {
+      return `<button onclick="openDetail('${p.id}')" class="surface flex items-center gap-3 rounded-xl p-3 text-left">
+        <img src="${p.img}" alt="${p.title}" class="h-11 w-11 rounded-lg object-cover">
+        <span class="min-w-0">
+          <span class="block truncate text-sm font-semibold">${p.title}</span>
+          <span class="soft mt-0.5 block text-xs">${p.copies} copies</span>
+        </span>
+      </button>`;
+    }
+
+    function renderDashboard() {
+      const f = prompts.filter(p => saved().includes(p.id));
+      document.getElementById("dashboard-favs").innerHTML = (f.length ? f : prompts.slice(0, 2)).slice(0, 2).map(mini).join("");
+      document.getElementById("dashboard-prompts").innerHTML = prompts.slice(1, 3).map(mini).join("");
+      document.getElementById("dashboard-viewed").innerHTML = prompts.slice(3, 5).map(mini).join("");
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      const dark = document.body.classList.contains("dark");
+      localStorage.setItem("promptmall-theme", dark ? "dark" : "light");
+      document.getElementById("theme-icon").setAttribute("data-lucide", dark ? "sun" : "moon");
+      refreshIcons();
+    }
+
+    if (localStorage.getItem("promptmall-theme") === "dark") document.body.classList.add("dark");
+
+    populateCategorySelects();
+    renderQuickCategories();
+    renderFeatured();
+    renderCategories();
+    renderTrending();
+    renderExplore();
+    renderDashboard();
+    updateBuilder();
+    refreshIcons();
+  </script>
+</body>
+</html>

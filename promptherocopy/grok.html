@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptHero Clone – Search AI Prompts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: #0f0f0f;
+            border-bottom: 1px solid #222;
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            background: linear-gradient(90deg, #ff6b6b, #ff9f43);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 80px 24px 60px;
+            text-align: center;
+            background: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%);
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #aaa;
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 24px 18px 52px;
+            border-radius: 50px;
+            border: none;
+            background: #1e1e1e;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 0 0 2px #333;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 0 0 2px #ff6b6b;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            fill: #888;
+        }
+
+        .models {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .model-tag {
+            background: #222;
+            color: #ccc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .model-tag:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title a {
+            font-size: 14px;
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        /* Prompt Grid */
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .prompt-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .prompt-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            background: #2a2a2a;
+        }
+
+        .prompt-info {
+            padding: 14px;
+        }
+
+        .prompt-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prompt-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Categories */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .cat-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .cat-card:hover {
+            border-color: #ff6b6b;
+            background: #222;
+        }
+
+        .cat-card h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .cat-card span {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            padding: 60px 24px 40px;
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h4 {
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .footer-col a:hover {
+            color: #ff6b6b;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 40px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid #222;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+            .prompt-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-inner">
+            <a href="#" class="logo">Prompt<span>Hero</span></a>
+            
+            <nav>
+                <a href="#">Academy</a>
+                <a href="#">Tools</a>
+                <a href="#">Blog</a>
+                <a href="#">Resources</a>
+                <a href="#">Plans</a>
+                <a href="#">Community</a>
+            </nav>
+
+            <div class="nav-right">
+                <a href="#" class="btn btn-outline">Log in</a>
+                <a href="#" class="btn btn-primary">Sign up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>The #1 website for prompt engineering</h1>
+        <p>Search millions of AI prompts for Midjourney, Stable Diffusion, Sora, Flux, and every leading generative model. Discover hand-picked inspiration from the community.</p>
+
+        <div class="search-box">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" placeholder="Search prompts, models, styles...">
+        </div>
+
+        <div class="models">
+            <div class="model-tag">Midjourney</div>
+            <div class="model-tag">Stable Diffusion</div>
+            <div class="model-tag">Flux</div>
+            <div class="model-tag">Sora</div>
+            <div class="model-tag">DALL·E</div>
+            <div class="model-tag">Leonardo</div>
+            <div class="model-tag">Kling</div>
+            <div class="model-tag">Veo</div>
+        </div>
+    </section>
+
+    <!-- FEATURED PROMPTS -->
+    <section class="section">
+        <div class="section-title">
+            <span>Featured Prompts</span>
+            <a href="#">View all →</a>
+        </div>
+
+        <div class="prompt-grid">
+            <!-- Card 1 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/1/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Cinematic portrait of a cyberpunk girl</h3>
+                    <div class="prompt-meta">
+                        <span>by @artistname</span>
+                        <span>★ 4.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/2/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Fantasy landscape with floating islands</h3>
+                    <div class="prompt-meta">
+                        <span>by @dreamer</span>
+                        <span>★ 4.8</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/3/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Ultra realistic product photography</h3>
+                    <div class="prompt-meta">
+                        <span>by @productpro</span>
+                        <span>★ 4.7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/4/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Anime style warrior in neon city</h3>
+                    <div class="prompt-meta">
+                        <span>by @animeking</span>
+                        <span>★ 4.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/5/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Minimalist logo design concepts</h3>
+                    <div class="prompt-meta">
+                        <span>by @designlab</span>
+                        <span>★ 4.6</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="prompt-card">
+                <img src="https://picsum.photos/seed/6/400/300" alt="prompt">
+                <div class="prompt-info">
+                    <h3>Dark fantasy dragon in storm</h3>
+                    <div class="prompt-meta">
+                        <span>by @darkart</span>
+                        <span>★ 4.8</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BEST BY MODEL -->
+    <section class="section">
+        <div class="section-title">
+            <span>Best AI Prompts by Model</span>
+        </div>
+
+        <div class="categories">
+            <div class="cat-card">
+                <h4>Midjourney</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Stable Diffusion</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Flux</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Sora</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>DALL·E</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Leonardo AI</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Kling</h4>
+                <span>Best prompts</span>
+            </div>
+            <div class="cat-card">
+                <h4>Veo</h4>
+                <span>Best prompts</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI MODELS -->
+    <section class="section">
+        <div class="section-title">
+            <span>AI Models</span>
+            <a href="#">All models →</a>
+        </div>
+
+        <div class="categories">
+            <div class="cat-card">
+                <h4>LoRA</h4>
+                <span>Model Addons</span>
+            </div>
+            <div class="cat-card">
+                <h4>Checkpoints</h4>
+                <span>Base Models</span>
+            </div>
+            <div class="cat-card">
+                <h4>Textual Inversion</h4>
+                <span>Embeddings</span>
+            </div>
+            <div class="cat-card">
+                <h4>ControlNet</h4>
+                <span>Control</span>
+            </div>
+            <div class="cat-card">
+                <h4>VAE</h4>
+                <span>Enhancers</span>
+            </div>
+            <div class="cat-card">
+                <h4>Workflows</h4>
+                <span>ComfyUI</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>PromptHero</h4>
+                <a href="#">About</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-col">
+                <h4>Best Prompts</h4>
+                <a href="#">Midjourney</a>
+                <a href="#">Stable Diffusion</a>
+                <a href="#">Flux</a>
+                <a href="#">Sora</a>
+            </div>
+            <div class="footer-col">
+                <h4>Models</h4>
+                <a href="#">LoRA</a>
+                <a href="#">Checkpoints</a>
+                <a href="#">ControlNet</a>
+                <a href="#">All Models</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="#">AI Logo Generator</a>
+                <a href="#">AI Wallpaper</a>
+                <a href="#">AI Outfit</a>
+                <a href="#">More Tools</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="#">FAQ</a>
+                <a href="#">Plans</a>
+                <a href="#">Privacy</a>
+                <a href="#">Status</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Built with ❤️ · © 2026 Your Prompt Site · All rights reserved
+        </div>
+    </footer>
+
+</body>
+</html>

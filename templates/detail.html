@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}{{ prompt.title }} — PromptMall{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-5 py-10 sm:px-6">
+  <a href="{{ url_for('explore') }}" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold soft hover:text-pink-500">
+    <i data-lucide="arrow-left" class="h-4 w-4"></i> Back to explore
+  </a>
+
+  <div class="grid gap-8 lg:grid-cols-[1.1fr_.9fr]">
+    <div class="overflow-hidden rounded-2xl" style="background:var(--night)">
+      <img src="{{ prompt.img }}" alt="{{ prompt.title }}" class="h-[28rem] w-full object-cover sm:h-[36rem]">
+    </div>
+    <div class="flex flex-col justify-center">
+      <div class="flex items-center justify-between">
+        <span class="tag rounded-full px-3 py-1 text-sm font-semibold">{{ prompt.category }} · {{ prompt.type }}</span>
+        <span class="soft text-sm">Prompt ID · PM-{{ prompt.id }}</span>
+      </div>
+      <h1 class="display mt-4 text-4xl font-bold leading-tight sm:text-5xl" style="color:var(--ink)">{{ prompt.title }}</h1>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% for t in prompt.tags %}
+          <span class="tag rounded-full px-3 py-1.5 text-sm">{{ t }}</span>
+        {% endfor %}
+      </div>
+      <div class="mt-6 flex items-center gap-3">
+        <img class="h-11 w-11 rounded-full object-cover" src="https://images.pexels.com/photos/33261955/pexels-photo-33261955.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Author">
+        <div>
+          <p class="text-sm font-semibold" style="color:var(--ink)">{{ prompt.author }}</p>
+          <p class="soft text-xs">Visual prompt creator</p>
+        </div>
+      </div>
+      <div class="mt-6 flex gap-3">
+        <button class="icon-btn flex items-center gap-2 rounded-xl px-4 py-3 font-semibold {% if prompt.id in favorites %}liked{% endif %}"
+                onclick="toggleFavorite('{{ prompt.id }}', this)">
+          <i data-lucide="heart" class="h-5 w-5"></i>
+          <span>{{ prompt.likes }}</span>
+        </button>
+        <button class="icon-btn flex items-center gap-2 rounded-xl px-4 py-3 font-semibold" onclick="toast('Share link copied')">Share</button>
+      </div>
+      <button class="pink-btn mt-5 flex items-center justify-center gap-2 rounded-xl px-5 py-4 font-semibold"
+              onclick="copyPrompt('{{ prompt.id }}')">
+        <i data-lucide="copy" class="h-5 w-5"></i> Copy Prompt
+      </button>
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <button class="icon-btn rounded-xl px-3 py-3 text-sm font-semibold" onclick="toast('Prompt ready for ChatGPT')">Use in ChatGPT</button>
+        <button class="icon-btn rounded-xl px-3 py-3 text-sm font-semibold" onclick="toast('Prompt ready for Gemini')">Use in Gemini</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="mt-10">
+    <h2 class="display text-2xl font-bold" style="color:var(--ink)">The Prompt</h2>
+    <div class="surface mt-4 rounded-2xl p-6 font-mono text-sm leading-7 soft">{{ prompt.prompt_text }}</div>
+  </section>
+
+  <section class="mt-10 rounded-2xl border p-6 sm:p-8" style="border-color:rgba(123,44,191,.22);background:linear-gradient(135deg,rgba(255,46,147,.06),rgba(123,44,191,.05))">
+    <h2 class="display text-3xl font-bold" style="color:var(--ink)">Customize This Prompt</h2>
+    <p class="soft mt-1.5">Fine-tune the ingredients and make this prompt yours.</p>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Subject</label>
+        <input id="builder-subject" class="form-control" value="Young Indian man" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Style</label>
+        <input id="builder-style" class="form-control" value="Cinematic" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Location</label>
+        <input id="builder-location" class="form-control" value="Mumbai at night" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Lighting</label>
+        <input id="builder-lighting" class="form-control" value="Neon" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Camera</label>
+        <input id="builder-camera" class="form-control" value="85mm" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Mood</label>
+        <input id="builder-mood" class="form-control" value="Dramatic" oninput="updateBuilder()">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Aspect Ratio</label>
+        <select id="builder-ratio" class="form-control" onchange="updateBuilder()">
+          <option>16:9</option>
+          <option>1:1</option>
+          <option>4:5</option>
+          <option>9:16</option>
+        </select>
+      </div>
+    </div>
+    <h3 class="mt-7 text-lg font-semibold" style="color:var(--ink)">Generated Prompt</h3>
+    <div id="generated-prompt" class="surface mt-3 rounded-xl p-5 leading-7"></div>
+    <button class="pink-btn mt-4 rounded-xl px-5 py-3 font-semibold" onclick="copyGenerated()">Copy Final Prompt</button>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function updateBuilder() {
+    const v = id => document.getElementById(id).value;
+    document.getElementById("generated-prompt").textContent =
+      `Create an ultra-realistic ${v("builder-style").toLowerCase()} portrait of a ${v("builder-subject")} in ${v("builder-location")}, ${v("builder-lighting").toLowerCase()} lighting, ${v("builder-mood").toLowerCase()} mood, professional photography, ${v("builder-camera")} lens, cinematic colour grading, ${v("builder-ratio")} aspect ratio.`;
+  }
+  function copyGenerated() {
+    navigator.clipboard.writeText(document.getElementById("generated-prompt").textContent)
+      .then(() => toast("Final prompt copied"));
+  }
+  updateBuilder();
+</script>
+{% endblock %}

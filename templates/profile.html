@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Profile — PromptMall{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Welcome back, Aziz 👋</h1>
+      <p class="soft mt-2">Here’s your creative activity at a glance.</p>
+    </div>
+    <img class="h-16 w-16 rounded-2xl object-cover" src="https://images.pexels.com/photos/33261955/pexels-photo-33261955.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Avatar">
+  </div>
+
+  <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="surface rounded-2xl p-5">
+      <p class="soft text-sm font-medium">Saved Prompts</p>
+      <p class="mt-1.5 text-3xl font-bold">{{ stats.saved }}</p>
+    </div>
+    <div class="surface rounded-2xl p-5">
+      <p class="soft text-sm font-medium">Created Prompts</p>
+      <p class="mt-1.5 text-3xl font-bold">{{ "%02d"|format(stats.created) }}</p>
+    </div>
+    <div class="surface rounded-2xl p-5">
+      <p class="soft text-sm font-medium">Total Copies</p>
+      <p class="mt-1.5 text-3xl font-bold">{{ stats.copies }}</p>
+    </div>
+    <div class="surface rounded-2xl p-5">
+      <p class="soft text-sm font-medium">Likes</p>
+      <p class="mt-1.5 text-3xl font-bold">{{ stats.likes }}</p>
+    </div>
+  </div>
+
+  <div class="mt-10 grid gap-8 lg:grid-cols-3">
+    <div>
+      <h2 class="text-lg font-semibold" style="color:var(--ink)">Recent Favorites</h2>
+      <div class="mt-4 grid gap-3">
+        {% for p in fav_prompts %}
+        <a href="{{ url_for('detail', prompt_id=p.id) }}" class="surface flex items-center gap-3 rounded-xl p-3">
+          <img src="{{ p.img }}" class="h-11 w-11 rounded-lg object-cover">
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-semibold">{{ p.title }}</span>
+            <span class="soft mt-0.5 block text-xs">{{ p.copies }} copies</span>
+          </span>
+        </a>
+        {% else %}
+        <p class="soft text-sm">No favorites yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold" style="color:var(--ink)">My Prompts</h2>
+      <div class="mt-4 grid gap-3">
+        {% for p in my_prompts %}
+        <a href="{{ url_for('detail', prompt_id=p.id) if p.id in ['rain','luxury','city','wedding','anime','minimal'] else '#' }}" class="surface flex items-center gap-3 rounded-xl p-3">
+          <img src="{{ p.img }}" class="h-11 w-11 rounded-lg object-cover">
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-semibold">{{ p.title }}</span>
+            <span class="soft mt-0.5 block text-xs">{{ p.copies }} copies</span>
+          </span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <div>
+      <h2 class="text-lg font-semibold" style="color:var(--ink)">Recently Viewed</h2>
+      <div class="mt-4 grid gap-3">
+        {% for p in viewed_prompts %}
+        <a href="{{ url_for('detail', prompt_id=p.id) }}" class="surface flex items-center gap-3 rounded-xl p-3">
+          <img src="{{ p.img }}" class="h-11 w-11 rounded-lg object-cover">
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-semibold">{{ p.title }}</span>
+            <span class="soft mt-0.5 block text-xs">{{ p.copies }} copies</span>
+          </span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

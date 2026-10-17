@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptVerse — AI Prompt Gallery</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#08090d;
+    --panel:#101116;
+    --panel2:#15161d;
+    --border:#252630;
+    --text:#f5f5f7;
+    --muted:#9899a5;
+    --accent:#7c5cff;
+    --accent2:#a78bfa;
+}
+
+body{
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* NAVBAR */
+
+.navbar{
+    height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 5%;
+    border-bottom:1px solid #1d1e25;
+    background:rgba(8,9,13,.92);
+    backdrop-filter:blur(15px);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+.nav-links{
+    display:flex;
+    gap:28px;
+    list-style:none;
+}
+
+.nav-links a{
+    color:#b6b7c2;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.login{
+    color:white;
+    background:transparent;
+    border:0;
+    padding:10px 14px;
+    cursor:pointer;
+}
+
+.signup{
+    background:white;
+    color:#111;
+    border:0;
+    padding:10px 17px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.menu{
+    display:none;
+    font-size:25px;
+    cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+    text-align:center;
+    padding:95px 20px 55px;
+    max-width:1000px;
+    margin:auto;
+}
+
+.hero h1{
+    font-size:clamp(42px,6vw,72px);
+    line-height:1;
+    letter-spacing:-4px;
+    margin-bottom:22px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#fff,#9b82ff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    color:var(--muted);
+    font-size:18px;
+    max-width:620px;
+    margin:auto;
+    line-height:1.6;
+}
+
+/* SEARCH */
+
+.search-box{
+    margin:35px auto 25px;
+    max-width:720px;
+    display:flex;
+    background:#111218;
+    border:1px solid #2a2b35;
+    border-radius:14px;
+    padding:7px;
+}
+
+.search-box input{
+    flex:1;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:white;
+    padding:15px;
+    font-size:15px;
+}
+
+.search-box button{
+    border:0;
+    background:white;
+    color:#111;
+    padding:0 24px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* TRENDING TAGS */
+
+.tags{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:9px;
+}
+
+.tag{
+    border:1px solid #292a34;
+    background:#101117;
+    color:#aeb0bc;
+    padding:8px 13px;
+    border-radius:100px;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.tag:hover{
+    border-color:#6650d6;
+    color:white;
+}
+
+/* MAIN */
+
+.container{
+    width:90%;
+    max-width:1450px;
+    margin:auto;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:25px 0;
+}
+
+.section-head h2{
+    font-size:22px;
+}
+
+.tabs{
+    display:flex;
+    gap:7px;
+}
+
+.tab{
+    padding:9px 14px;
+    background:#111218;
+    color:#92939e;
+    border:1px solid #272832;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:#fff;
+    color:#111;
+}
+
+/* FILTERS */
+
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.filter{
+    padding:9px 13px;
+    background:#101117;
+    border:1px solid #282932;
+    color:#a5a6b1;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.filter:hover{
+    color:white;
+    border-color:#55566a;
+}
+
+/* GRID */
+
+.gallery{
+    columns:5 220px;
+    column-gap:16px;
+}
+
+.card{
+    break-inside:avoid;
+    margin-bottom:16px;
+    background:#101116;
+    border:1px solid #20212a;
+    border-radius:13px;
+    overflow:hidden;
+    transition:.25s;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    border-color:#383945;
+}
+
+.image-wrap{
+    position:relative;
+}
+
+.card img{
+    width:100%;
+    display:block;
+    min-height:190px;
+    object-fit:cover;
+}
+
+.like{
+    position:absolute;
+    top:10px;
+    right:10px;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:0;
+    background:rgba(0,0,0,.65);
+    color:white;
+    cursor:pointer;
+    font-size:17px;
+}
+
+.like.liked{
+    color:#ff5c8a;
+}
+
+.card-body{
+    padding:13px;
+}
+
+.card-title{
+    font-weight:650;
+    font-size:14px;
+    margin-bottom:9px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#858692;
+    font-size:12px;
+}
+
+.model{
+    color:#a895ff;
+}
+
+.creator{
+    margin-top:12px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.avatar{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.creator span{
+    color:#8e8f9a;
+    font-size:12px;
+}
+
+/* LOAD */
+
+.load{
+    display:block;
+    margin:40px auto 70px;
+    padding:12px 24px;
+    border:1px solid #2c2d36;
+    background:#111218;
+    color:white;
+    border-radius:9px;
+    cursor:pointer;
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    z-index:200;
+    padding:30px;
+    overflow:auto;
+}
+
+.modal.active{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal-box{
+    width:100%;
+    max-width:1000px;
+    background:#111218;
+    border:1px solid #292a35;
+    border-radius:18px;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.modal-image{
+    background:#08090d;
+}
+
+.modal-image img{
+    width:100%;
+    height:100%;
+    min-height:500px;
+    object-fit:cover;
+}
+
+.modal-content{
+    padding:30px;
+}
+
+.close{
+    float:right;
+    border:0;
+    background:#22232c;
+    color:white;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.modal-content h2{
+    margin:45px 0 10px;
+}
+
+.modal-content p{
+    color:#9a9ba7;
+    line-height:1.6;
+}
+
+.prompt{
+    margin-top:25px;
+    padding:17px;
+    background:#0a0b0f;
+    border:1px solid #292a34;
+    border-radius:10px;
+    color:#c7c8d1;
+    line-height:1.6;
+    font-size:13px;
+}
+
+.copy{
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    background:white;
+    color:#111;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* TOOLS */
+
+.tools{
+    margin:80px 0;
+}
+
+.tool-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.tool{
+    padding:24px;
+    background:#101116;
+    border:1px solid #23242d;
+    border-radius:13px;
+}
+
+.tool-icon{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+.tool h3{
+    margin-bottom:7px;
+}
+
+.tool p{
+    color:#858692;
+    font-size:13px;
+    line-height:1.5;
+}
+
+/* FOOTER */
+
+footer{
+    border-top:1px solid #202129;
+    padding:50px 5%;
+    color:#777984;
+    margin-top:50px;
+}
+
+.footer-inner{
+    max-width:1450px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+}
+
+.footer-links{
+    display:flex;
+    gap:20px;
+}
+
+.footer-links a{
+    color:#777984;
+    text-decoration:none;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .menu{
+        display:block;
+    }
+
+    .tool-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .modal-box{
+        grid-template-columns:1fr;
+    }
+
+    .modal-image img{
+        min-height:350px;
+        max-height:500px;
+    }
+}
+
+@media(max-width:600px){
+
+    .navbar{
+        padding:0 20px;
+    }
+
+    .hero{
+        padding-top:60px;
+    }
+
+    .hero h1{
+        letter-spacing:-2px;
+    }
+
+    .search-box{
+        flex-direction:column;
+        gap:7px;
+    }
+
+    .search-box button{
+        padding:13px;
+    }
+
+    .section-head{
+        align-items:flex-start;
+        gap:15px;
+        flex-direction:column;
+    }
+
+    .tool-grid{
+        grid-template-columns:1fr;
+    }
+
+    .footer-inner{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .modal{
+        padding:10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        Prompt<span>Verse</span>
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="#">Explore</a></li>
+        <li><a href="#models">Models</a></li>
+        <li><a href="#tools">AI Tools</a></li>
+        <li><a href="#">Community</a></li>
+    </ul>
+
+    <div class="nav-right">
+        <button class="login">Log in</button>
+        <button class="signup">Sign up</button>
+        <div class="menu">☰</div>
+    </div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <h1>
+        Discover the world's<br>
+        <span>best AI prompts.</span>
+    </h1>
+
+    <p>
+        Explore thousands of AI-generated creations and discover
+        the prompts behind them.
+    </p>
+
+    <div class="search-box">
+        <input
+            id="search"
+            type="text"
+            placeholder="Search prompts, styles, creators..."
+        >
+        <button onclick="searchCards()">Search</button>
+    </div>
+
+    <div class="tags">
+        <div class="tag" onclick="quickSearch('cinematic')">Cinematic</div>
+        <div class="tag" onclick="quickSearch('portrait')">Portrait</div>
+        <div class="tag" onclick="quickSearch('anime')">Anime</div>
+        <div class="tag" onclick="quickSearch('fashion')">Fashion</div>
+        <div class="tag" onclick="quickSearch('architecture')">Architecture</div>
+        <div class="tag" onclick="quickSearch('fantasy')">Fantasy</div>
+    </div>
+
+</section>
+
+
+<!-- CONTENT -->
+
+<main class="container">
+
+    <div class="section-head">
+
+        <h2>Explore prompts</h2>
+
+        <div class="tabs">
+            <button class="tab active" onclick="filterType('all',this)">
+                All
+            </button>
+
+            <button class="tab" onclick="filterType('image',this)">
+                Images
+            </button>
+
+            <button class="tab" onclick="filterType('video',this)">
+                Videos
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+        <button class="filter" onclick="filterModel('Midjourney')">
+            Midjourney
+        </button>
+
+        <button class="filter" onclick="filterModel('Flux')">
+            Flux
+        </button>
+
+        <button class="filter" onclick="filterModel('Stable Diffusion')">
+            Stable Diffusion
+        </button>
+
+        <button class="filter" onclick="filterModel('ChatGPT')">
+            ChatGPT
+        </button>
+
+        <button class="filter" onclick="filterModel('Sora')">
+            Sora
+        </button>
+
+        <button class="filter" onclick="showAll()">
+            Clear filters
+        </button>
+
+    </div>
+
+
+    <!-- GALLERY -->
+
+    <div class="gallery" id="gallery"></div>
+
+    <button class="load" onclick="loadMore()">
+        Load more
+    </button>
+
+
+    <!-- AI TOOLS -->
+
+    <section class="tools" id="tools">
+
+        <div class="section-head">
+            <h2>AI Tools</h2>
+        </div>
+
+        <div class="tool-grid">
+
+            <div class="tool">
+                <div class="tool-icon">🎨</div>
+                <h3>AI Image Generator</h3>
+                <p>Create beautiful images from simple text prompts.</p>
+            </div>
+
+            <div class="tool">
+                <div class="tool-icon">🎬</div>
+                <h3>AI Video Generator</h3>
+                <p>Turn creative ideas into cinematic AI videos.</p>
+            </div>
+
+            <div class="tool">
+                <div class="tool-icon">👤</div>
+                <h3>AI Portrait</h3>
+                <p>Create professional and artistic portraits.</p>
+            </div>
+
+            <div class="tool">
+                <div class="tool-icon">✨</div>
+                <h3>Prompt Generator</h3>
+                <p>Generate optimized prompts for your favorite AI model.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-image">
+            <img id="modalImg" src="">
+        </div>
+
+        <div class="modal-content">
+
+            <button class="close" onclick="closeModal()">×</button>
+
+            <h2 id="modalTitle"></h2>
+
+            <p id="modalMeta"></p>
+
+            <div class="prompt" id="modalPrompt"></div>
+
+            <button class="copy" onclick="copyPrompt()">
+                📋 Copy Prompt
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div>
+            © 2026 PromptVerse
+        </div>
+
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+/* DEMO DATA */
+
+const prompts = [
+
+{
+title:"Cinematic futuristic woman",
+model:"Midjourney",
+type:"image",
+category:"cinematic portrait",
+image:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900",
+creator:"Alex",
+avatar:"https://i.pravatar.cc/80?img=1",
+likes:124,
+prompt:"Ultra cinematic portrait of a futuristic woman, neon city lights, volumetric lighting, dramatic shadows, realistic skin texture, 85mm lens, shallow depth of field, high detail."
+},
+
+{
+title:"Luxury fashion editorial",
+model:"Flux",
+type:"image",
+category:"fashion",
+image:"https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=900",
+creator:"Mia",
+avatar:"https://i.pravatar.cc/80?img=2",
+likes:98,
+prompt:"Luxury fashion editorial photograph, elegant model wearing avant-garde black clothing, studio lighting, premium magazine aesthetic, realistic photography."
+},
+
+{
+title:"Ancient fantasy city",
+model:"Stable Diffusion",
+type:"image",
+category:"fantasy architecture",
+image:"https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=900",
+creator:"Daniel",
+avatar:"https://i.pravatar.cc/80?img=3",
+likes:231,
+prompt:"Massive ancient fantasy city built into mountains, golden sunset, cinematic atmosphere, detailed architecture, epic scale, atmospheric perspective."
+},
+
+{
+title:"Cyberpunk street",
+model:"Midjourney",
+type:"image",
+category:"cinematic",
+image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=900",
+creator:"Noah",
+avatar:"https://i.pravatar.cc/80?img=4",
+likes:341,
+prompt:"Cyberpunk Tokyo street at night, rain reflections, neon signs, futuristic vehicles, cinematic lighting, ultra realistic photography."
+},
+
+{
+title:"Minimal architecture",
+model:"Flux",
+type:"image",
+category:"architecture",
+image:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=900",
+creator:"Sofia",
+avatar:"https://i.pravatar.cc/80?img=5",
+likes:76,
+prompt:"Minimal modern architectural interior, warm natural sunlight, clean geometric forms, luxury design, editorial architecture photography."
+},
+
+{
+title:"Anime hero character",
+model:"Stable Diffusion",
+type:"image",
+category:"anime",
+image:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=900",
+creator:"Ken",
+avatar:"https://i.pravatar.cc/80?img=6",
+likes:188,
+prompt:"Powerful anime hero character standing on a mountain, dramatic clouds, glowing energy, detailed anime illustration, dynamic composition."
+},
+
+{
+title:"Luxury car commercial",
+model:"ChatGPT",
+type:"image",
+category:"cinematic",
+image:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900",
+creator:"Ryan",
+avatar:"https://i.pravatar.cc/80?img=7",
+likes:275,
+prompt:"Luxury sports car driving through a futuristic city at night, cinematic commercial photography, wet road reflections, dramatic lighting."
+},
+
+{
+title:"Dreamy portrait",
+model:"Midjourney",
+type:"image",
+category:"portrait",
+image:"https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=900",
+creator:"Emma",
+avatar:"https://i.pravatar.cc/80?img=8",
+likes:152,
+prompt:"Dreamy artistic portrait of a young woman, soft natural lighting, pastel colors, film photography aesthetic, subtle grain, elegant composition."
+},
+
+{
+title:"Sci-fi space station",
+model:"Sora",
+type:"video",
+category:"cinematic",
+image:"https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=900",
+creator:"Leo",
+avatar:"https://i.pravatar.cc/80?img=9",
+likes:204,
+prompt:"Cinematic tracking shot through a massive futuristic space station orbiting Earth, realistic spacecraft movement, dramatic sunlight."
+},
+
+{
+title:"Dark fantasy warrior",
+model:"Flux",
+type:"image",
+category:"fantasy",
+image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=900",
+creator:"Oliver",
+avatar:"https://i.pravatar.cc/80?img=10",
+likes:312,
+prompt:"Dark fantasy warrior in ancient armor, standing in misty forest, dramatic backlight, highly detailed concept art, epic atmosphere."
+}
+
+];
+
+let currentData=[...prompts];
+
+
+/* RENDER */
+
+function render(data){
+
+    const gallery=document.getElementById("gallery");
+
+    gallery.innerHTML="";
+
+    if(data.length===0){
+
+        gallery.innerHTML=`
+            <div style="
+                color:#777;
+                padding:40px;
+                text-align:center;
+                column-span:all;
+            ">
+                No prompts found.
+            </div>
+        `;
+
+        return;
+    }
+
+    data.forEach((item,index)=>{
+
+        gallery.innerHTML+=`
+
+        <article class="card"
+            onclick="openModal(${prompts.indexOf(item)})">
+
+            <div class="image-wrap">
+
+                <img
+                    loading="lazy"
+                    src="${item.image}"
+                    alt="${item.title}"
+                >
+
+                <button
+                    class="like"
+                    onclick="event.stopPropagation();likeCard(this)"
+                >
+                    ♡
+                </button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="card-title">
+                    ${item.title}
+                </div>
+
+                <div class="meta">
+                    <span class="model">${item.model}</span>
+                    <span>♡ ${item.likes}</span>
+                </div>
+
+                <div class="creator">
+
+                    <img
+                        class="avatar"
+                        src="${item.avatar}"
+                    >
+
+                    <span>@${item.creator}</span>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        `;
+    });
+
+}
+
+
+/* SEARCH */
+
+function searchCards(){
+
+    const query=document
+        .getElementById("search")
+        .value
+        .toLowerCase()
+        .trim();
+
+    if(!query){
+
+        currentData=[...prompts];
+
+    }else{
+
+        currentData=prompts.filter(item=>
+
+            item.title.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query) ||
+            item.model.toLowerCase().includes(query) ||
+            item.creator.toLowerCase().includes(query) ||
+            item.prompt.toLowerCase().includes(query)
+
+        );
+
+    }
+
+    render(currentData);
+}
+
+
+function quickSearch(text){
+
+    document.getElementById("search").value=text;
+
+    searchCards();
+
+}
+
+
+/* MODEL FILTER */
+
+function filterModel(model){
+
+    currentData=prompts.filter(item=>
+        item.model===model
+    );
+
+    render(currentData);
+
+}
+
+
+function showAll(){
+
+    currentData=[...prompts];
+
+    render(currentData);
+
+}
+
+
+/* TYPE FILTER */
+
+function filterType(type,button){
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(x=>x.classList.remove("active"));
+
+    button.classList.add("active");
+
+    if(type==="all"){
+
+        currentData=[...prompts];
+
+    }else{
+
+        currentData=prompts.filter(item=>
+            item.type===type
+        );
+
+    }
+
+    render(currentData);
+
+}
+
+
+/* LIKE */
+
+function likeCard(button){
+
+    button.classList.toggle("liked");
+
+    button.innerText=
+        button.classList.contains("liked")
+        ?"♥"
+        :"♡";
+
+}
+
+
+/* MODAL */
+
+let selectedPrompt=null;
+
+
+function openModal(index){
+
+    selectedPrompt=prompts[index];
+
+    document.getElementById("modalImg").src=
+        selectedPrompt.image;
+
+    document.getElementById("modalTitle").innerText=
+        selectedPrompt.title;
+
+    document.getElementById("modalMeta").innerText=
+        `${selectedPrompt.model} • ${selectedPrompt.category} • by @${selectedPrompt.creator}`;
+
+    document.getElementById("modalPrompt").innerText=
+        selectedPrompt.prompt;
+
+    document.getElementById("modal")
+        .classList.add("active");
+
+}
+
+
+function closeModal(){
+
+    document.getElementById("modal")
+        .classList.remove("active");
+
+}
+
+
+document.getElementById("modal")
+.addEventListener("click",function(e){
+
+    if(e.target===this){
+        closeModal();
+    }
+
+});
+
+
+/* COPY */
+
+function copyPrompt(){
+
+    navigator.clipboard
+        .writeText(selectedPrompt.prompt)
+        .then(()=>{
+
+            const button=document.querySelector(".copy");
+
+            button.innerText="✓ Copied!";
+
+            setTimeout(()=>{
+
+                button.innerText="📋 Copy Prompt";
+
+            },1500);
+
+        });
+
+}
+
+
+/* LOAD MORE */
+
+function loadMore(){
+
+    const extra=[...prompts,...prompts];
+
+    currentData=extra;
+
+    render(currentData);
+
+}
+
+
+/* ENTER SEARCH */
+
+document
+.getElementById("search")
+.addEventListener("keydown",function(e){
+
+    if(e.key==="Enter"){
+        searchCards();
+    }
+
+});
+
+
+/* INITIAL */
+
+render(currentData);
+
+</script>
+
+</body>
+</html>

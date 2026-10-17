@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptVerse — Discover prompts. Create anything.</title>
+    <meta name="description" content="Discover the world's best AI prompts. Explore inspiring creations across Midjourney, Flux, Stable Diffusion, DALL-E 3, and ChatGPT.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* CSS RESET & VARIABLES */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-main: #08090D;
+            --bg-sec: #0D0F14;
+            --bg-card: #11131A;
+            --bg-card-hover: #161922;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(139, 92, 246, 0.3);
+            
+            --text-primary: #F5F5F7;
+            --text-secondary: #9699A6;
+            --text-muted: #626575;
+            
+            --accent: #8B5CF6;
+            --accent-hover: #7C3AED;
+            --accent-glow: rgba(139, 92, 246, 0.25);
+            --secondary-accent: #6366F1;
+            
+            --radius-s: 8px;
+            --radius-m: 14px;
+            --radius-l: 20px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* UTILITY CLASSES */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .glass {
+            background: rgba(13, 15, 20, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            display: inline-flex;
+            items-center: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-m);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--secondary-accent));
+            color: #FFF;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.35);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            padding: 0.625rem;
+            border-radius: var(--radius-m);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--accent) 70%, var(--secondary-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* HEADER / NAVBAR */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all var(--transition-normal);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+            border-radius: 0 0 var(--radius-m) var(--radius-m);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary-accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFF;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: var(--radius-full);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            padding: 6rem 0 4rem;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            animation: float 12s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            top: -100px;
+            left: 20%;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary-accent);
+            bottom: -50px;
+            right: 20%;
+            animation-delay: -6s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-30px) scale(1.08); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.25rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+
+        /* SEARCH BAR */
+        .search-box {
+            max-width: 680px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-l);
+            padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: all var(--transition-fast);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow), 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            padding-right: 1rem;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .popular-tags {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .tag:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* CONTROL BAR (FILTERS & SORTING) */
+        .controls-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+            padding: 1.25rem;
+            border-radius: var(--radius-l);
+            background: var(--bg-sec);
+            border: 1px solid var(--border);
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 0.25rem;
+        }
+
+        .filter-row::-webkit-scrollbar { display: none; }
+
+        .pills-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-m);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+        }
+
+        .pill:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .pill.active {
+            background: var(--accent);
+            color: #FFF;
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+
+        .select-custom {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-m);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* MASONRY GALLERY */
+        .gallery-grid {
+            columns: 5 260px;
+            column-gap: 1.25rem;
+            width: 100%;
+        }
+
+        .card {
+            break-inside: avoid;
+            margin-bottom: 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-m);
+            overflow: hidden;
+            position: relative;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .card-image-wrap {
+            position: relative;
+            width: 100%;
+            background: var(--bg-sec);
+            overflow: hidden;
+        }
+
+        .card-image-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+
+        .card:hover .card-image-wrap img {
+            transform: scale(1.04);
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(8, 9, 13, 0.95) 0%, rgba(8, 9, 13, 0.4) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem;
+        }
+
+        .card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #FFF;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #FFF;
+            line-height: 1.3;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .creator-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: none;
+            color: #FFF;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-s);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            background: #FFF;
+            color: #000;
+        }
+
+        .action-btn.active-like {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .action-btn.active-save {
+            color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        /* SKELETON LOADER */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-sec) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-m);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* SECTION HEADERS */
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            margin-top: 5rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* CATEGORIES GRID */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-card {
+            position: relative;
+            height: 120px;
+            border-radius: var(--radius-m);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(8,9,13,0.85), rgba(8,9,13,0.2));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .category-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* TRENDING LEADERBOARD */
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: var(--radius-m);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .trending-item:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        .rank-num {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            width: 28px;
+            text-align: center;
+        }
+
+        .trending-item:nth-child(1) .rank-num { color: #F59E0B; }
+        .trending-item:nth-child(2) .rank-num { color: #94A3B8; }
+        .trending-item:nth-child(3) .rank-num { color: #B45309; }
+
+        .trending-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-s);
+            object-fit: cover;
+        }
+
+        .trending-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .trending-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .trending-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* AI TOOLS SECTION */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius-l);
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 180px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .tool-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent);
+            border-radius: var(--radius-m);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .tool-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .tool-arrow {
+            align-self: flex-end;
+            color: var(--text-muted);
+            transition: transform var(--transition-fast);
+        }
+
+        .tool-card:hover .tool-arrow {
+            transform: translateX(4px);
+            color: var(--accent);
+        }
+
+        /* COMMUNITY / CREATORS */
+        .creators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .creator-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius-l);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all var(--transition-fast);
+        }
+
+        .creator-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .creator-avatar-lg {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 0.75rem;
+            border: 2px solid var(--accent);
+        }
+
+        .creator-name-lg {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .creator-username {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .creator-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            margin: 6rem 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.05));
+            border: 1px solid var(--border-hover);
+            border-radius: 28px;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cta-desc {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            font-size: 1rem;
+        }
+
+        /* PROMPT DETAIL MODAL */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-normal);
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-l);
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            transform: scale(0.95);
+            transition: transform var(--transition-normal);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-backdrop.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-left {
+            flex: 1.2;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-left img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        .modal-right {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFF;
+        }
+
+        .prompt-code-box {
+            background: var(--bg-sec);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-m);
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #D1D5DB;
+            line-height: 1.6;
+            margin: 1.25rem 0;
+            max-height: 200px;
+            overflow-y: auto;
+            position: relative;
+            word-break: break-word;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            background: var(--bg-sec);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr repeat(4, 1fr);
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            max-width: 280px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-muted);
+            transition: color var(--transition-fast);
+        }
+
+        .social-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* MOBILE MENU DRAWER */
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            z-index: 200;
+            padding: 2rem 1.5rem;
+            transition: right var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mobile-drawer.open {
+            right: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 199;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-normal);
+        }
+
+        .drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* SCROLL REVEAL ANIMATION */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .modal-content {
+                flex-direction: column;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+            .modal-left img {
+                max-height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-actions .btn-secondary, .nav-actions .btn-primary {
+                display: none;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .hero-title {
+                font-size: 2.25rem;
+            }
+            .gallery-grid {
+                columns: 2 150px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .cta-section {
+                padding: 2.5rem 1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav class="nav-inner glass">
+                <a href="#" class="logo">
+                    <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+                    <span>PromptVerse</span>
+                </a>
+
+                <ul class="nav-links">
+                    <li><a href="#explore" class="nav-link active">Explore</a></li>
+                    <li><a href="#models" class="nav-link">Models</a></li>
+                    <li><a href="#categories" class="nav-link">Categories</a></li>
+                    <li><a href="#tools" class="nav-link">AI Tools</a></li>
+                    <li><a href="#community" class="nav-link">Community</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <a href="#explore" class="btn-icon"><i data-lucide="search"></i></a>
+                    <button class="btn btn-secondary">Log in</button>
+                    <button class="btn btn-primary"><i data-lucide="plus"></i> Create Prompt</button>
+                    <button class="mobile-toggle" id="menuBtn"><i data-lucide="menu"></i></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+                <span>PromptVerse</span>
+            </a>
+            <button class="mobile-toggle" id="closeDrawerBtn"><i data-lucide="x"></i></button>
+        </div>
+        <ul class="nav-links" style="display: flex; flex-direction: column; gap: 1rem;">
+            <li><a href="#explore" class="nav-link active">Explore</a></li>
+            <li><a href="#models" class="nav-link">Models</a></li>
+            <li><a href="#categories" class="nav-link">Categories</a></li>
+            <li><a href="#tools" class="nav-link">AI Tools</a></li>
+            <li><a href="#community" class="nav-link">Community</a></li>
+        </ul>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto;">
+            <button class="btn btn-secondary" style="width: 100%;">Log in</button>
+            <button class="btn btn-primary" style="width: 100%;">Create Prompt</button>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-bg">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+            </div>
+            
+            <h1 class="hero-title">
+                Discover the world's best <span class="gradient-text">AI prompts.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Explore inspiring AI prompts, discover new creative styles, and turn ideas into stunning images and videos.
+            </p>
+
+            <div class="search-box">
+                <i data-lucide="search" style="color: var(--text-muted); margin-right: 0.75rem;"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search prompts, styles, models, creators...">
+                <button class="btn btn-primary" id="searchBtn">Search</button>
+            </div>
+
+            <div class="popular-tags">
+                <span>Popular:</span>
+                <span class="tag" onclick="quickSearch('Cinematic')">Cinematic</span>
+                <span class="tag" onclick="quickSearch('Portrait')">Portrait</span>
+                <span class="tag" onclick="quickSearch('Anime')">Anime</span>
+                <span class="tag" onclick="quickSearch('Product')">Product</span>
+                <span class="tag" onclick="quickSearch('Architecture')">Architecture</span>
+                <span class="tag" onclick="quickSearch('Cyberpunk')">Cyberpunk</span>
+            </div>
+        </section>
+
+        <section id="explore" class="container reveal">
+            <div class="controls-bar">
+                <div class="filter-row" id="modelFilters">
+                    </div>
+                <div class="filter-row" style="border-top: 1px solid var(--border); padding-top: 0.75rem;">
+                    <div class="pills-group" id="typeFilters">
+                        <button class="pill active" data-type="all">All Types</button>
+                        <button class="pill" data-type="image">Images</button>
+                        <button class="pill" data-type="video">Videos</button>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Sort by:</span>
+                        <select id="sortSelect" class="select-custom">
+                            <option value="trending">Trending</option>
+                            <option value="newest">Newest</option>
+                            <option value="liked">Most Liked</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                </div>
+        </section>
+
+        <section id="categories" class="container reveal">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Browse Categories</h2>
+                    <p class="section-subtitle">Explore prompts by visual style and subject matter</p>
+                </div>
+            </div>
+            <div class="categories-grid" id="categoriesGrid">
+                </div>
+        </section>
+
+        <section class="container reveal">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Trending This Week</h2>
+                    <p class="section-subtitle">Most popular creations ranked by community activity</p>
+                </div>
+            </div>
+            <div class="trending-grid" id="trendingGrid">
+                </div>
+        </section>
+
+        <section id="tools" class="container reveal">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Create with AI</h2>
+                    <p class="section-subtitle">Turn your ideas into images, videos and creative assets</p>
+                </div>
+            </div>
+            <div class="tools-grid">
+                <a href="#" class="tool-card">
+                    <div>
+                        <div class="tool-icon"><i data-lucide="image"></i></div>
+                        <h3 class="tool-title">AI Image Generator</h3>
+                        <p class="tool-desc">Generate photorealistic images from textual prompts seamlessly.</p>
+                    </div>
+                    <i data-lucide="arrow-right" class="tool-arrow"></i>
+                </a>
+                <a href="#" class="tool-card">
+                    <div>
+                        <div class="tool-icon"><i data-lucide="video"></i></div>
+                        <h3 class="tool-title">AI Video Generator</h3>
+                        <p class="tool-desc">Create high-quality cinematic video clips with simple text prompts.</p>
+                    </div>
+                    <i data-lucide="arrow-right" class="tool-arrow"></i>
+                </a>
+                <a href="#" class="tool-card">
+                    <div>
+                        <div class="tool-icon"><i data-lucide="user"></i></div>
+                        <h3 class="tool-title">AI Portrait Generator</h3>
+                        <p class="tool-desc">Produce highly accurate studio-quality human character portraits.</p>
+                    </div>
+                    <i data-lucide="arrow-right" class="tool-arrow"></i>
+                </a>
+                <a href="#" class="tool-card">
+                    <div>
+                        <div class="tool-icon"><i data-lucide="box"></i></div>
+                        <h3 class="tool-title">AI Product Mockup</h3>
+                        <p class="tool-desc">Build commercial-ready product photosets for brands and retail.</p>
+                    </div>
+                    <i data-lucide="arrow-right" class="tool-arrow"></i>
+                </a>
+            </div>
+        </section>
+
+        <section id="community" class="container reveal">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Built by creators, for creators</h2>
+                    <p class="section-subtitle">Follow top prompt engineers and creative artists</p>
+                </div>
+            </div>
+            <div class="creators-grid" id="creatorsGrid">
+                </div>
+        </section>
+
+        <section class="container reveal">
+            <div class="cta-section">
+                <h2 class="cta-title">Have a prompt worth sharing?</h2>
+                <p class="cta-desc">Publish your creation, showcase your style, and inspire thousands of creators across the globe.</p>
+                <button class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1rem;"><i data-lucide="upload-cloud"></i> Submit a Prompt</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-backdrop" id="promptModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalCloseBtn"><i data-lucide="x"></i></button>
+            <div class="modal-left">
+                <img id="modalImg" src="" alt="Prompt Visual">
+            </div>
+            <div class="modal-right">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <span id="modalModel" class="card-badge">Midjourney</span>
+                    <span id="modalCategory" style="font-size: 0.8rem; color: var(--text-secondary);">Photography</span>
+                </div>
+
+                <h2 id="modalTitle" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Title</h2>
+                
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                    <img id="modalAvatar" src="" class="avatar" alt="Creator">
+                    <div>
+                        <div id="modalCreator" style="font-size: 0.9rem; font-weight: 600;">Creator Name</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Author</div>
+                    </div>
+                </div>
+
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">PROMPT STATEMENT</label>
+                <div class="prompt-code-box" id="modalPromptText"></div>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: auto; padding-top: 1rem;">
+                    <button class="btn btn-primary" id="copyPromptBtn" style="flex: 1;"><i data-lucide="copy"></i> Copy Prompt</button>
+                    <button class="btn btn-secondary btn-icon" id="modalLikeBtn"><i data-lucide="heart"></i></button>
+                    <button class="btn btn-secondary btn-icon" id="modalSaveBtn"><i data-lucide="bookmark"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+                        <span>PromptVerse</span>
+                    </a>
+                    <p>Discover prompts. Create anything. The ultimate open inspiration gallery for AI generative media.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Midjourney Prompts</a></li>
+                        <li><a href="#">Flux Prompts</a></li>
+                        <li><a href="#">Stable Diffusion</a></li>
+                        <li><a href="#">ChatGPT Prompts</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Photorealistic</a></li>
+                        <li><a href="#">Anime & Manga</a></li>
+                        <li><a href="#">Architecture</a></li>
+                        <li><a href="#">Cyberpunk</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Top Creators</a></li>
+                        <li><a href="#">Leaderboard</a></li>
+                        <li><a href="#">Submit Prompt</a></li>
+                        <li><a href="#">Discord Server</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>© 2026 PromptVerse. All rights reserved.</div>
+                <div class="social-links">
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"><i data-lucide="instagram"></i></a>
+                    <a href="#"><i data-lucide="github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // =========================================================================
+        // 1. DATA STORE (Realistic Demo Data)
+        // =========================================================================
+        const PROMPTS_DATA = [
+            {
+                id: 1,
+                title: "Cinematic Cyberpunk Street Alley",
+                prompt: "A cinematic film shot of a rainy neon-drenched cyberpunk alley, dramatic reflections in water puddles, vibrant violet and cyan lighting, intricate details, shot on 35mm lens, f/1.8 aperture, photorealistic --ar 16:9 --v 6.0",
+                image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+                model: "Midjourney",
+                category: "Cinematic",
+                type: "image",
+                creator: "Alex Rivers",
+                creatorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+                likes: 1420,
+                createdAt: "2026-02-20"
+            },
+            {
+                id: 2,
+                title: "Futuristic Astronaut Deep Space Floating",
+                prompt: "Hyperrealistic portrait of an astronaut floating endlessly in space, Earth reflected clearly on helmet visor, nebulae gas clouds in background, cinematic composition, cosmic scale --style raw --v 6.0",
+                image: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80",
+                model: "Flux",
+                category: "Fantasy",
+                type: "image",
+                creator: "Elena Rostova",
+                creatorAvatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80",
+                likes: 980,
+                createdAt: "2026-02-22"
+            },
+            {
+                id: 3,
+                title: "Brutalist Concrete Modern Villa",
+                prompt: "Architectural photo of a minimalist brutalist glass and concrete modern villa submerged in a pine forest, autumn season, foggy morning atmosphere, natural lighting, high end design magazine cover --aspect 4:3",
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                model: "Stable Diffusion",
+                category: "Architecture",
+                type: "image",
+                creator: "Marco K.",
+                creatorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
+                likes: 2150,
+                createdAt: "2026-02-18"
+            },
+            {
+                id: 4,
+                title: "High Fashion Avant-Garde Neon Portrait",
+                prompt: "Studio portrait of a model wearing high fashion futuristic reflective metallic clothing, dramatic softbox lighting, avant-garde makeup design, sharp detail, Vogue magazine cover quality",
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
+                model: "DALL-E 3",
+                category: "Fashion",
+                type: "image",
+                creator: "Sarah Chen",
+                creatorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80",
+                likes: 3100,
+                createdAt: "2026-02-25"
+            },
+            {
+                id: 5,
+                title: "3D Isometric Cute Cyber Room",
+                prompt: "3d isometric view of a cozy gamer room at night, neon glowing plants, dual monitor setup, pastel colors, soft clay render style, Octane render, 8k clean composition",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+                model: "Midjourney",
+                category: "3D",
+                type: "image",
+                creator: "PixelMaster",
+                creatorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80",
+                likes: 850,
+                createdAt: "2026-02-10"
+            },
+            {
+                id: 6,
+                title: "Minimalist Cosmetic Glass Bottle",
+                prompt: "Commercial product photography of a luxury clear glass skin serum bottle resting on smooth wet river stones, soft morning sunlight, natural bokeh background, minimal aesthetic",
+                image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+                model: "Flux",
+                category: "Product",
+                type: "image",
+                creator: "Sarah Chen",
+                creatorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80",
+                likes: 1290,
+                createdAt: "2026-02-23"
+            },
+            {
+                id: 7,
+                title: "Anime Samurai Girl Cherry Blossom",
+                prompt: "Makoto Shinkai style anime artwork of a female samurai standing on a hilltop looking over a vibrant city during sunset, floating cherry blossom petals, atmospheric lighting, masterpiece",
+                image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80",
+                model: "NijiJourney",
+                category: "Anime",
+                type: "image",
+                creator: "Kaito Design",
+                creatorAvatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=100&q=80",
+                likes: 4120,
+                createdAt: "2026-02-24"
+            },
+            {
+                id: 8,
+                title: "Sora Slow Motion Ocean Wave Loop",
+                prompt: "A ultra high-definition slow-motion video showing a crystal clear turquoise ocean wave rolling over golden sand at sunset, cinematic camera tracking, 60fps fluid simulation quality",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+                model: "Sora",
+                category: "Cinematic",
+                type: "video",
+                creator: "Alex Rivers",
+                creatorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
+                likes: 5400,
+                createdAt: "2026-02-26"
+            }
+        ];
+
+        const CATEGORIES_DATA = [
+            { name: "Photography", count: "14.2k", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80" },
+            { name: "Anime", count: "9.8k", image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=400&q=80" },
+            { name: "Architecture", count: "6.5k", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80" },
+            { name: "Fashion", count: "8.1k", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" },
+            { name: "Cyberpunk", count: "11.4k", image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=400&q=80" },
+            { name: "3D Render", count: "5.3k", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80" }
+        ];
+
+        const MODELS_LIST = ["All", "Midjourney", "Flux", "Stable Diffusion", "DALL-E 3", "Sora", "NijiJourney"];
+
+        const CREATORS_DATA = [
+            { name: "Sarah Chen", username: "@sarah_ai", followers: "12.4k", prompts: "142", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" },
+            { name: "Alex Rivers", username: "@arivers", followers: "28.1k", prompts: "310", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" },
+            { name: "Elena Rostova", username: "@elena_prompt", followers: "8.9k", prompts: "98", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80" },
+            { name: "Marco K.", username: "@marcocreates", followers: "15.3k", prompts: "204", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" }
+        ];
+
+        // =========================================================================
+        // 2. STATE MANAGEMENT
+        // =========================================================================
+        let state = {
+            searchQuery: "",
+            selectedModel: "All",
+            selectedType: "all",
+            selectedCategory: "All",
+            sortBy: "trending",
+            likedIds: JSON.parse(localStorage.getItem("pv_liked") || "[]"),
+            savedIds: JSON.parse(localStorage.getItem("pv_saved") || "[]")
+        };
+
+        // =========================================================================
+        // 3. CORE RENDER FUNCTIONS
+        // =========================================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            initModelFilters();
+            renderGallery();
+            renderCategories();
+            renderTrending();
+            renderCreators();
+            setupEventListeners();
+            lucide.createIcons();
+            initScrollReveal();
+        });
+
+        function initModelFilters() {
+            const container = document.getElementById("modelFilters");
+            container.innerHTML = MODELS_LIST.map(m => `
+                <button class="pill ${state.selectedModel === m ? 'active' : ''}" onclick="selectModel('${m}')">${m}</button>
+            `).join("");
+        }
+
+        function filterPrompts() {
+            return PROMPTS_DATA.filter(item => {
+                const matchesSearch = state.searchQuery === "" || 
+                    item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                    item.prompt.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                    item.category.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                    item.creator.toLowerCase().includes(state.searchQuery.toLowerCase());
+
+                const matchesModel = state.selectedModel === "All" || item.model === state.selectedModel;
+                const matchesType = state.selectedType === "all" || item.type === state.selectedType;
+                const matchesCategory = state.selectedCategory === "All" || item.category === state.selectedCategory;
+
+                return matchesSearch && matchesModel && matchesType && matchesCategory;
+            }).sort((a, b) => {
+                if (state.sortBy === "liked") return b.likes - a.likes;
+                if (state.sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+                return b.likes - a.likes; // Default trending
+            });
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById("galleryGrid");
+            const filtered = filterPrompts();
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="search-x" style="width: 48px; height: 48px;"></i>
+                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">No prompts found</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Try modifying your search or clear some filters to see results.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                const isLiked = state.likedIds.includes(item.id);
+                const isSaved = state.savedIds.includes(item.id);
+
+                return `
+                    <div class="card" onclick="openModal(${item.id})">
+                        <div class="card-image-wrap">
+                            <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
+                            <div class="card-overlay">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="card-badge">${item.model}</span>
+                                    ${item.type === 'video' ? '<span class="card-badge" style="background: var(--accent);"><i data-lucide="play" style="width:10px; height:10px;"></i> Video</span>' : ''}
+                                </div>
+                                <div class="card-info">
+                                    <h3 class="card-title">${item.title}</h3>
+                                    <div class="card-meta">
+                                        <div class="creator-info">
+                                            <img src="${item.creatorAvatar}" class="avatar" alt="${item.creator}">
+                                            <span>${item.creator}</span>
+                                        </div>
+                                        <div class="card-actions" onclick="event.stopPropagation()">
+                                            <button class="action-btn ${isLiked ? 'active-like' : ''}" onclick="toggleLike(${item.id})">
+                                                <i data-lucide="heart" style="width:14px; height:14px;"></i>
+                                            </button>
+                                            <button class="action-btn ${isSaved ? 'active-save' : ''}" onclick="toggleSave(${item.id})">
+                                                <i data-lucide="bookmark" style="width:14px; height:14px;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            lucide.createIcons();
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById("categoriesGrid");
+            grid.innerHTML = CATEGORIES_DATA.map(c => `
+                <div class="category-card" onclick="selectCategory('${c.name}')">
+                    <img src="${c.image}" alt="${c.name}" loading="lazy">
+                    <div class="category-overlay">
+                        <div class="category-name">${c.name}</div>
+                        <div class="category-count">${c.count} prompts</div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function renderTrending() {
+            const grid = document.getElementById("trendingGrid");
+            const top4 = [...PROMPTS_DATA].sort((a,b) => b.likes - a.likes).slice(0, 4);
+
+            grid.innerHTML = top4.map((item, idx) => `
+                <div class="trending-item" onclick="openModal(${item.id})">
+                    <div class="rank-num">0${idx + 1}</div>
+                    <img src="${item.image}" class="trending-thumb" alt="${item.title}">
+                    <div class="trending-info">
+                        <div class="trending-title">${item.title}</div>
+                        <div class="trending-meta">${item.model} • ❤️ ${item.likes} likes</div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function renderCreators() {
+            const grid = document.getElementById("creatorsGrid");
+            grid.innerHTML = CREATORS_DATA.map(c => `
+                <div class="creator-card">
+                    <img src="${c.avatar}" class="creator-avatar-lg" alt="${c.name}">
+                    <div class="creator-name-lg">${c.name}</div>
+                    <div class="creator-username">${c.username}</div>
+                    <div class="creator-stats">
+                        <span><strong>${c.followers}</strong> Followers</span>
+                        <span>•</span>
+                        <span><strong>${c.prompts}</strong> Prompts</span>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;"><i data-lucide="user-plus"></i> Follow</button>
+                </div>
+            `).join("");
+        }
+
+        // =========================================================================
+        // 4. INTERACTION & FILTER LOGIC
+        // =========================================================================
+        function selectModel(model) {
+            state.selectedModel = model;
+            initModelFilters();
+            renderGallery();
+        }
+
+        function selectCategory(category) {
+            state.selectedCategory = state.selectedCategory === category ? "All" : category;
+            renderGallery();
+            document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function quickSearch(tag) {
+            state.searchQuery = tag;
+            document.getElementById("searchInput").value = tag;
+            renderGallery();
+            document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleLike(id) {
+            const index = state.likedIds.indexOf(id);
+            const prompt = PROMPTS_DATA.find(p => p.id === id);
+
+            if (index > -1) {
+                state.likedIds.splice(index, 1);
+                if (prompt) prompt.likes--;
+            } else {
+                state.likedIds.push(id);
+                if (prompt) prompt.likes++;
+            }
+
+            localStorage.setItem("pv_liked", JSON.stringify(state.likedIds));
+            renderGallery();
+            renderTrending();
+        }
+
+        function toggleSave(id) {
+            const index = state.savedIds.indexOf(id);
+            if (index > -1) {
+                state.savedIds.splice(index, 1);
+            } else {
+                state.savedIds.push(id);
+            }
+
+            localStorage.setItem("pv_saved", JSON.stringify(state.savedIds));
+            renderGallery();
+        }
+
+        // =========================================================================
+        // 5. MODAL SYSTEM
+        // =========================================================================
+        function openModal(id) {
+            const prompt = PROMPTS_DATA.find(p => p.id === id);
+            if (!prompt) return;
+
+            document.getElementById("modalImg").src = prompt.image;
+            document.getElementById("modalTitle").innerText = prompt.title;
+            document.getElementById("modalModel").innerText = prompt.model;
+            document.getElementById("modalCategory").innerText = prompt.category;
+            document.getElementById("modalCreator").innerText = prompt.creator;
+            document.getElementById("modalAvatar").src = prompt.creatorAvatar;
+            document.getElementById("modalPromptText").innerText = prompt.prompt;
+
+            const copyBtn = document.getElementById("copyPromptBtn");
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(prompt.prompt);
+                copyBtn.innerHTML = `<i data-lucide="check"></i> Copied!`;
+                lucide.createIcons();
+                setTimeout(() => {
+                    copyBtn.innerHTML = `<i data-lucide="copy"></i> Copy Prompt`;
+                    lucide.createIcons();
+                }, 2000);
+            };
+
+            const backdrop = document.getElementById("promptModal");
+            backdrop.classList.add("open");
+        }
+
+        function closeModal() {
+            document.getElementById("promptModal").classList.remove("open");
+        }
+
+        // =========================================================================
+        // 6. EVENT LISTENERS
+        // =========================================================================
+        function setupEventListeners() {
+            // Search Input Event Listener
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", (e) => {
+                state.searchQuery = e.target.value.trim();
+                renderGallery();
+            });
+
+            // Sorting Listener
+            document.getElementById("sortSelect").addEventListener("change", (e) => {
+                state.sortBy = e.target.value;
+                renderGallery();
+            });
+
+            // Type Filter Buttons
+            const typeBtns = document.querySelectorAll("#typeFilters .pill");
+            typeBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    typeBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    state.selectedType = btn.dataset.type;
+                    renderGallery();
+                });
+            });
+
+            // Modal Controls
+            document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+            document.getElementById("promptModal").addEventListener("click", (e) => {
+                if (e.target.id === "promptModal") closeModal();
+            });
+
+            // Mobile Drawer Controls
+            const drawer = document.getElementById("mobileDrawer");
+            const overlay = document.getElementById("drawerOverlay");
+
+            document.getElementById("menuBtn").addEventListener("click", () => {
+                drawer.classList.add("open");
+                overlay.classList.add("open");
+            });
+
+            const closeDrawer = () => {
+                drawer.classList.remove("open");
+                overlay.classList.remove("open");
+            };
+
+            document.getElementById("closeDrawerBtn").addEventListener("click", closeDrawer);
+            overlay.addEventListener("click", closeDrawer);
+
+            // Global Keyboard Shortcuts
+            window.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeModal();
+                    closeDrawer();
+                }
+            });
+        }
+
+        // =========================================================================
+        // 7. ANIMATIONS (Scroll Reveal)
+        // =========================================================================
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

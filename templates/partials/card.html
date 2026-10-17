@@ -1,0 +1,31 @@
+<article class="prompt-card">
+  <a href="{{ url_for('detail', prompt_id=p.id) }}" class="block h-52 w-full overflow-hidden">
+    <img src="{{ p.img }}" alt="{{ p.title }}" class="h-full w-full object-cover">
+  </a>
+  <div class="p-5">
+    <div class="flex items-center justify-between gap-2">
+      <span class="tag rounded-full px-2.5 py-1 text-xs font-semibold">{{ p.type }}</span>
+      <button class="icon-btn grid h-8 w-8 place-items-center rounded-lg {% if p.id in favorites %}liked{% endif %}"
+              onclick="toggleFavorite('{{ p.id }}', this)">
+        <i data-lucide="heart" class="h-4 w-4"></i>
+      </button>
+    </div>
+    <a href="{{ url_for('detail', prompt_id=p.id) }}" class="mt-3.5 block text-left text-lg font-semibold leading-tight hover:opacity-75">
+      {{ p.title }}
+    </a>
+    <p class="soft mt-2 text-sm leading-5">{{ p.description }}</p>
+    <div class="mt-3.5 flex flex-wrap gap-1.5">
+      {% for t in p.tags %}
+        <span class="tag rounded-md px-2 py-1 text-xs">{{ t }}</span>
+      {% endfor %}
+    </div>
+    <div class="mt-4 flex items-center justify-between border-t pt-3.5 text-xs soft" style="border-color:var(--line)">
+      <span>by {{ p.author }}</span>
+      <span class="flex items-center gap-1"><i data-lucide="heart" class="h-3.5 w-3.5"></i>{{ p.likes }}</span>
+    </div>
+    <button class="pink-btn mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold"
+            onclick="copyPrompt('{{ p.id }}')">
+      <i data-lucide="copy" class="h-4 w-4"></i>Copy Prompt
+    </button>
+  </div>
+</article>

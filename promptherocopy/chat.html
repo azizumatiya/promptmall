@@ -1,0 +1,6558 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PromptVerse — Discover prompts. Create anything.">
+<title>PromptVerse — Discover prompts. Create anything.</title>
+
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* =========================================================
+   PROMPTVERSE
+   Premium AI Prompt Discovery Platform
+   ========================================================= */
+
+:root {
+  --bg: #08090d;
+  --bg-2: #0d0f14;
+  --card: #11131a;
+  --card-2: #151821;
+  --border: rgba(255,255,255,.08);
+  --border-hover: rgba(139,92,246,.42);
+
+  --text: #f5f5f7;
+  --muted: #9699a6;
+  --muted-2: #696d7a;
+
+  --purple: #8b5cf6;
+  --indigo: #6366f1;
+  --purple-soft: rgba(139,92,246,.14);
+
+  --success: #34d399;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --ease: cubic-bezier(.2,.8,.2,1);
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  background: var(--bg);
+  color: var(--text);
+
+  font-family: "Inter", sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: rgba(139,92,246,.35);
+  color: white;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #292c36;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b3f4d;
+}
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% -15%,
+      rgba(99,102,241,.11),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 0% 35%,
+      rgba(139,92,246,.07),
+      transparent 27%
+    ),
+    var(--bg);
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+
+  opacity: .25;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 55px 55px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 85%
+    );
+}
+
+.orb {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(80px);
+
+  opacity: .45;
+}
+
+.orb-1 {
+  width: 420px;
+  height: 420px;
+
+  top: -180px;
+  left: 15%;
+
+  background: rgba(139,92,246,.13);
+
+  animation: floatOrb 14s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 350px;
+  height: 350px;
+
+  right: -140px;
+  top: 30%;
+
+  background: rgba(99,102,241,.10);
+
+  animation: floatOrb 17s ease-in-out infinite reverse;
+}
+
+@keyframes floatOrb {
+  0%,100% {
+    transform: translate3d(0,0,0);
+  }
+
+  50% {
+    transform: translate3d(20px,-25px,0);
+  }
+}
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.container {
+  width: min(1400px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  height: 74px;
+
+  border-bottom: 1px solid rgba(255,255,255,.06);
+
+  background:
+    rgba(8,9,13,.76);
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+.nav-inner {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  flex-shrink: 0;
+
+  font-family: "Manrope", sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.6px;
+}
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139,92,246,.95),
+      rgba(99,102,241,.85)
+    );
+
+  box-shadow:
+    0 8px 30px rgba(99,102,241,.20);
+}
+
+.logo-mark i {
+  width: 17px;
+  height: 17px;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nav-link {
+  position: relative;
+
+  padding: 10px 12px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: color .25s var(--ease);
+}
+
+.nav-link::after {
+  content: "";
+
+  position: absolute;
+
+  left: 12px;
+  right: 12px;
+  bottom: 3px;
+
+  height: 2px;
+
+  border-radius: 99px;
+
+  background: var(--purple);
+
+  transform: scaleX(0);
+
+  transition: transform .25s var(--ease);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: white;
+}
+
+.nav-link.active::after,
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  background: transparent;
+  color: var(--muted);
+
+  transition: .25s var(--ease);
+}
+
+.icon-btn:hover {
+  color: white;
+  border-color: var(--border);
+  background: rgba(255,255,255,.05);
+}
+
+.icon-btn i {
+  width: 17px;
+  height: 17px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: rgba(255,255,255,.04);
+
+  color: var(--text);
+
+  padding: 10px 14px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition:
+    transform .25s var(--ease),
+    border-color .25s var(--ease),
+    background .25s var(--ease),
+    box-shadow .25s var(--ease);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(255,255,255,.15);
+
+  background:
+    rgba(255,255,255,.07);
+}
+
+.btn i {
+  width: 15px;
+  height: 15px;
+}
+
+.btn-primary {
+  border-color: transparent;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--purple),
+      var(--indigo)
+    );
+
+  box-shadow:
+    0 8px 28px rgba(99,102,241,.18);
+}
+
+.btn-primary:hover {
+  border-color: transparent;
+
+  box-shadow:
+    0 12px 35px rgba(99,102,241,.30);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.btn-ghost:hover {
+  color: white;
+  background: rgba(255,255,255,.05);
+}
+
+.mobile-toggle {
+  display: none;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  position: relative;
+
+  min-height: 690px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.05);
+}
+
+.hero-glow {
+  position: absolute;
+
+  width: 800px;
+  height: 500px;
+
+  left: 50%;
+  top: 45%;
+
+  transform: translate(-50%,-50%);
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(139,92,246,.14),
+      transparent 68%
+    );
+
+  filter: blur(25px);
+
+  pointer-events: none;
+}
+
+.hero-glow::after {
+  content: "";
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  left: 50%;
+  top: 10%;
+
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(99,102,241,.11),
+      transparent 70%
+    );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+
+  text-align: center;
+
+  padding:
+    100px 20px 90px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 7px 12px;
+
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.035);
+
+  color: #b9bac5;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  animation:
+    fadeUp .8s var(--ease) both;
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--purple);
+
+  box-shadow:
+    0 0 14px rgba(139,92,246,.9);
+}
+
+.hero h1 {
+  max-width: 980px;
+
+  margin:
+    26px auto 0;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size:
+    clamp(48px, 7.2vw, 92px);
+
+  line-height: .98;
+
+  letter-spacing: -4.5px;
+
+  font-weight: 800;
+
+  color: var(--text);
+
+  animation:
+    fadeUp .8s .08s var(--ease) both;
+}
+
+.gradient-text {
+  background:
+    linear-gradient(
+      90deg,
+      #f5f5f7 0%,
+      #d8ccff 45%,
+      #9b7cff 80%,
+      #c5b8ff 100%
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+.hero-description {
+  max-width: 680px;
+
+  margin:
+    27px auto 0;
+
+  color: var(--muted);
+
+  font-size: 16px;
+
+  line-height: 1.75;
+
+  animation:
+    fadeUp .8s .16s var(--ease) both;
+}
+
+.hero-search {
+  width: min(720px, 100%);
+
+  margin:
+    34px auto 0;
+
+  display: flex;
+  align-items: center;
+
+  padding: 6px;
+
+  border:
+    1px solid rgba(255,255,255,.11);
+
+  border-radius: 16px;
+
+  background:
+    rgba(17,19,26,.78);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.04);
+
+  backdrop-filter: blur(18px);
+
+  transition:
+    border-color .25s,
+    box-shadow .25s;
+
+  animation:
+    fadeUp .8s .24s var(--ease) both;
+}
+
+.hero-search:focus-within {
+  border-color:
+    rgba(139,92,246,.45);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.30),
+    0 0 0 4px rgba(139,92,246,.07);
+}
+
+.search-icon {
+  width: 19px;
+  height: 19px;
+
+  margin-left: 15px;
+
+  color: var(--muted-2);
+}
+
+.hero-search input {
+  min-width: 0;
+  flex: 1;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: white;
+
+  padding: 14px 12px;
+
+  font-size: 14px;
+}
+
+.hero-search input::placeholder {
+  color: #626674;
+}
+
+.search-submit {
+  padding:
+    13px 19px;
+
+  border: 0;
+  border-radius: 11px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--purple),
+      var(--indigo)
+    );
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: .25s var(--ease);
+}
+
+.search-submit:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 25px rgba(99,102,241,.25);
+}
+
+.popular {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 17px;
+
+  color: #626674;
+
+  font-size: 12px;
+
+  animation:
+    fadeUp .8s .32s var(--ease) both;
+}
+
+.popular a {
+  padding: 6px 10px;
+
+  border:
+    1px solid rgba(255,255,255,.07);
+
+  border-radius: 999px;
+
+  color: #9295a2;
+
+  background:
+    rgba(255,255,255,.025);
+
+  transition: .2s var(--ease);
+}
+
+.popular a:hover {
+  color: white;
+
+  border-color:
+    rgba(139,92,246,.30);
+
+  background:
+    rgba(139,92,246,.08);
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.section {
+  padding: 92px 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 30px;
+}
+
+.section-kicker {
+  color: #8d91a0;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+
+  text-transform: uppercase;
+}
+
+.section-title {
+  margin-top: 7px;
+
+  font-family: "Manrope", sans-serif;
+
+  color: var(--text);
+
+  font-size:
+    clamp(30px, 4vw, 43px);
+
+  line-height: 1.1;
+
+  letter-spacing: -1.8px;
+
+  font-weight: 800;
+}
+
+.section-subtitle {
+  margin-top: 9px;
+
+  max-width: 600px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #aaa2ff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  transition: .2s;
+}
+
+.text-link:hover {
+  color: white;
+}
+
+.text-link i {
+  width: 14px;
+  height: 14px;
+
+  transition: transform .2s;
+}
+
+.text-link:hover i {
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   FILTER BAR
+   ========================================================= */
+
+.filter-area {
+  margin-bottom: 30px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  overflow-x: auto;
+
+  padding-bottom: 7px;
+
+  scrollbar-width: none;
+}
+
+.filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-label {
+  flex-shrink: 0;
+
+  margin-right: 4px;
+
+  color: var(--muted-2);
+
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.filter-btn {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 9px;
+
+  background: rgba(255,255,255,.025);
+
+  color: #8d91a0;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  transition: .22s var(--ease);
+}
+
+.filter-btn:hover {
+  color: white;
+
+  border-color:
+    rgba(255,255,255,.15);
+
+  background:
+    rgba(255,255,255,.055);
+}
+
+.filter-btn.active {
+  color: white;
+
+  border-color:
+    rgba(139,92,246,.42);
+
+  background:
+    rgba(139,92,246,.13);
+
+  box-shadow:
+    0 5px 20px rgba(139,92,246,.08);
+}
+
+.filter-btn i {
+  width: 13px;
+  height: 13px;
+}
+
+/* =========================================================
+   SORT
+   ========================================================= */
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+.result-count strong {
+  color: white;
+}
+
+.sort-select {
+  padding: 9px 32px 9px 11px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 9px;
+
+  outline: 0;
+
+  background:
+    #11131a;
+
+  color: #a2a5b0;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   MASONRY GALLERY
+   ========================================================= */
+
+.gallery {
+  columns: 5 220px;
+  column-gap: 16px;
+}
+
+.prompt-card {
+  position: relative;
+
+  display: inline-block;
+
+  width: 100%;
+
+  margin:
+    0 0 16px;
+
+  break-inside: avoid;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 17px;
+
+  overflow: hidden;
+
+  background: var(--card);
+
+  cursor: pointer;
+
+  transition:
+    transform .35s var(--ease),
+    border-color .35s var(--ease),
+    box-shadow .35s var(--ease);
+
+  animation:
+    cardIn .55s var(--ease) both;
+}
+
+.prompt-card:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(139,92,246,.28);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.28);
+}
+
+.card-media {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    #171922;
+}
+
+.card-media img {
+  width: 100%;
+  height: auto;
+
+  object-fit: cover;
+
+  transition:
+    transform .5s var(--ease);
+}
+
+.prompt-card:hover .card-media img {
+  transform: scale(1.04);
+}
+
+.card-gradient {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 35%,
+      rgba(0,0,0,.82) 100%
+    );
+
+  transition: opacity .3s;
+}
+
+.prompt-card:hover .card-gradient {
+  opacity: 1;
+}
+
+.model-badge {
+  position: absolute;
+
+  left: 10px;
+  top: 10px;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 8px;
+
+  border:
+    1px solid rgba(255,255,255,.10);
+
+  border-radius: 7px;
+
+  background:
+    rgba(8,9,13,.68);
+
+  color: #e3e3e8;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  backdrop-filter: blur(12px);
+}
+
+.video-badge {
+  position: absolute;
+
+  right: 10px;
+  top: 10px;
+
+  width: 27px;
+  height: 27px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(255,255,255,.10);
+
+  border-radius: 8px;
+
+  background:
+    rgba(8,9,13,.65);
+
+  color: white;
+
+  backdrop-filter: blur(12px);
+}
+
+.video-badge i {
+  width: 13px;
+  height: 13px;
+}
+
+.card-actions {
+  position: absolute;
+
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  opacity: 0;
+  transform: translateY(6px);
+
+  transition:
+    opacity .3s var(--ease),
+    transform .3s var(--ease);
+}
+
+.prompt-card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.view-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 10px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: white;
+
+  color: #101116;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.view-prompt i {
+  width: 13px;
+  height: 13px;
+}
+
+.card-save {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(255,255,255,.14);
+
+  border-radius: 9px;
+
+  background:
+    rgba(8,9,13,.65);
+
+  color: white;
+
+  backdrop-filter: blur(12px);
+}
+
+.card-save.saved {
+  color: #c4b5fd;
+
+  border-color:
+    rgba(139,92,246,.45);
+
+  background:
+    rgba(139,92,246,.17);
+}
+
+.card-save i {
+  width: 15px;
+  height: 15px;
+}
+
+.card-content {
+  padding: 13px;
+}
+
+.card-category {
+  color: #8d91a0;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: .7px;
+}
+
+.card-title {
+  margin-top: 5px;
+
+  color: white;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 14px;
+
+  line-height: 1.3;
+
+  font-weight: 700;
+
+  letter-spacing: -.2px;
+}
+
+.card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-top: 13px;
+}
+
+.creator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border:
+    1px solid rgba(255,255,255,.12);
+}
+
+.creator-name {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: #8e919d;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.card-likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  color: #777b88;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+.card-likes i {
+  width: 13px;
+  height: 13px;
+}
+
+.like-btn {
+  border: 0;
+  background: transparent;
+
+  color: #777b88;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  transition: color .2s, transform .2s;
+}
+
+.like-btn:hover {
+  color: #fb7185;
+}
+
+.like-btn.liked {
+  color: #fb7185;
+}
+
+.like-btn.pop {
+  animation: heartPop .35s var(--ease);
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  display: none;
+
+  padding: 80px 20px;
+
+  text-align: center;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,.02);
+}
+
+.empty-state.show {
+  display: block;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  margin: auto;
+
+  border-radius: 15px;
+
+  background:
+    rgba(139,92,246,.10);
+
+  color: #a78bfa;
+}
+
+.empty-icon i {
+  width: 21px;
+  height: 21px;
+}
+
+.empty-state h3 {
+  margin-top: 17px;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 18px;
+}
+
+.empty-state p {
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   CATEGORY SECTION
+   ========================================================= */
+
+.category-section {
+  border-top:
+    1px solid var(--border);
+
+  border-bottom:
+    1px solid var(--border);
+
+  background:
+    rgba(255,255,255,.015);
+}
+
+.category-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(6, 1fr);
+
+  gap: 12px;
+}
+
+.category-card {
+  position: relative;
+
+  height: 185px;
+
+  overflow: hidden;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 18px;
+
+  background: var(--card);
+
+  transition:
+    transform .3s var(--ease),
+    border-color .3s,
+    box-shadow .3s;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+
+  border-color:
+    rgba(139,92,246,.30);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.25);
+}
+
+.category-card img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  opacity: .52;
+
+  transition:
+    transform .5s var(--ease),
+    opacity .4s;
+}
+
+.category-card:hover img {
+  transform: scale(1.07);
+  opacity: .68;
+}
+
+.category-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 15px;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(8,9,13,.96),
+      rgba(8,9,13,.05) 80%
+    );
+}
+
+.category-name {
+  font-family: "Manrope", sans-serif;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.category-count {
+  margin-top: 4px;
+
+  color: #a0a3ae;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   TRENDING
+   ========================================================= */
+
+.trending-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 12px;
+}
+
+.trending-item {
+  display: grid;
+
+  grid-template-columns: 34px 72px 1fr auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 11px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 15px;
+
+  background: var(--card);
+
+  transition: .25s var(--ease);
+}
+
+.trending-item:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(139,92,246,.25);
+}
+
+.rank {
+  color: #6e7280;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  text-align: center;
+}
+
+.trending-thumb {
+  width: 72px;
+  height: 58px;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+}
+
+.trending-thumb img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.trending-info {
+  min-width: 0;
+}
+
+.trending-title {
+  overflow: hidden;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.trending-creator {
+  margin-top: 5px;
+
+  color: var(--muted-2);
+
+  font-size: 10px;
+}
+
+.trending-model {
+  color: #aaa2ff;
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.trending-likes {
+  color: #777b88;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   AI TOOLS
+   ========================================================= */
+
+.tools-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 12px;
+}
+
+.tool-card {
+  position: relative;
+
+  padding: 22px;
+
+  min-height: 175px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.035),
+      rgba(255,255,255,.015)
+    );
+
+  transition:
+    transform .3s var(--ease),
+    border-color .3s,
+    box-shadow .3s;
+}
+
+.tool-card:hover {
+  transform: translateY(-5px);
+
+  border-color:
+    rgba(139,92,246,.28);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.25);
+}
+
+.tool-icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(139,92,246,.20);
+
+  border-radius: 12px;
+
+  background:
+    rgba(139,92,246,.10);
+
+  color: #b5a5ff;
+
+  transition: transform .3s var(--ease);
+}
+
+.tool-card:hover .tool-icon {
+  transform:
+    translateY(-3px)
+    rotate(-3deg);
+}
+
+.tool-icon i {
+  width: 19px;
+  height: 19px;
+}
+
+.tool-title {
+  margin-top: 20px;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.tool-description {
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+
+  line-height: 1.55;
+}
+
+.tool-arrow {
+  position: absolute;
+
+  right: 17px;
+  bottom: 17px;
+
+  color: #676b78;
+
+  transition: .25s;
+}
+
+.tool-card:hover .tool-arrow {
+  color: #b5a5ff;
+
+  transform: translate(3px,-3px);
+}
+
+.tool-arrow i {
+  width: 15px;
+  height: 15px;
+}
+
+/* =========================================================
+   COMMUNITY
+   ========================================================= */
+
+.community {
+  position: relative;
+
+  overflow: hidden;
+
+  border-top:
+    1px solid var(--border);
+
+  border-bottom:
+    1px solid var(--border);
+
+  background:
+    radial-gradient(
+      circle at 80% 50%,
+      rgba(139,92,246,.08),
+      transparent 35%
+    );
+}
+
+.community-layout {
+  display: grid;
+
+  grid-template-columns:
+    .8fr 1.2fr;
+
+  gap: 60px;
+
+  align-items: center;
+}
+
+.community-copy h2 {
+  max-width: 550px;
+
+  margin-top: 9px;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size:
+    clamp(34px, 4vw, 52px);
+
+  line-height: 1.05;
+
+  letter-spacing: -2px;
+}
+
+.community-copy p {
+  max-width: 500px;
+
+  margin-top: 18px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+.creator-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap: 10px;
+}
+
+.creator-card {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  transition: .25s var(--ease);
+}
+
+.creator-card:hover {
+  transform: translateY(-3px);
+
+  border-color:
+    rgba(139,92,246,.25);
+}
+
+.creator-avatar {
+  width: 43px;
+  height: 43px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.creator-info {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.creator-fullname {
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.creator-username {
+  margin-top: 3px;
+
+  color: #717582;
+
+  font-size: 10px;
+}
+
+.creator-stats {
+  margin-top: 4px;
+
+  color: #8b8e9a;
+
+  font-size: 9px;
+}
+
+.follow-btn {
+  padding: 7px 10px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #a0a3ae;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  transition: .2s;
+}
+
+.follow-btn:hover,
+.follow-btn.following {
+  border-color:
+    rgba(139,92,246,.35);
+
+  color: #c4b5fd;
+
+  background:
+    rgba(139,92,246,.09);
+}
+
+/* =========================================================
+   CTA
+   ========================================================= */
+
+.cta {
+  position: relative;
+
+  margin:
+    0 auto;
+
+  padding:
+    95px 25px;
+
+  text-align: center;
+
+  overflow: hidden;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 25px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139,92,246,.12),
+      rgba(99,102,241,.06),
+      rgba(255,255,255,.02)
+    );
+}
+
+.cta::before {
+  content: "";
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%,-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(139,92,246,.14),
+      transparent 70%
+    );
+
+  filter: blur(30px);
+
+  pointer-events: none;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.cta h2 {
+  font-family: "Manrope", sans-serif;
+
+  font-size:
+    clamp(34px, 5vw, 58px);
+
+  line-height: 1;
+
+  letter-spacing: -2.5px;
+}
+
+.cta p {
+  max-width: 570px;
+
+  margin:
+    18px auto 0;
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+  line-height: 1.65;
+}
+
+.cta .btn {
+  margin-top: 28px;
+
+  padding:
+    13px 18px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+  margin-top: 100px;
+
+  border-top:
+    1px solid var(--border);
+
+  background:
+    rgba(8,9,13,.75);
+}
+
+.footer-main {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr repeat(3,1fr);
+
+  gap: 60px;
+
+  padding:
+    65px 0 55px;
+}
+
+.footer-brand p {
+  max-width: 270px;
+
+  margin-top: 15px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+.footer-column h4 {
+  margin-bottom: 15px;
+
+  color: white;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.footer-column a {
+  display: block;
+
+  margin-bottom: 11px;
+
+  color: #777b87;
+
+  font-size: 12px;
+
+  transition: color .2s;
+}
+
+.footer-column a:hover {
+  color: white;
+}
+
+.socials {
+  display: flex;
+
+  gap: 7px;
+
+  margin-top: 20px;
+}
+
+.social {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 9px;
+
+  color: #7f828e;
+
+  transition: .2s;
+}
+
+.social:hover {
+  color: white;
+
+  border-color:
+    rgba(139,92,246,.30);
+
+  background:
+    rgba(139,92,246,.08);
+}
+
+.social i {
+  width: 15px;
+  height: 15px;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    20px 0;
+
+  border-top:
+    1px solid var(--border);
+
+  color: #5f626d;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(0,0,0,.78);
+
+  backdrop-filter: blur(12px);
+
+  opacity: 0;
+
+  transition: opacity .3s;
+}
+
+.modal-backdrop.open {
+  display: flex;
+
+  opacity: 1;
+}
+
+.modal {
+  position: relative;
+
+  width: min(1080px, 100%);
+
+  max-height:
+    min(760px, calc(100vh - 40px));
+
+  display: grid;
+
+  grid-template-columns:
+    1.05fr .95fr;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(255,255,255,.10);
+
+  border-radius: 22px;
+
+  background:
+    #101219;
+
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.55);
+
+  transform:
+    translateY(15px)
+    scale(.97);
+
+  transition:
+    transform .35s var(--ease);
+}
+
+.modal-backdrop.open .modal {
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+.modal-image {
+  position: relative;
+
+  min-height: 600px;
+
+  background: #0b0c10;
+}
+
+.modal-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.modal-content {
+  overflow-y: auto;
+
+  padding: 34px;
+}
+
+.modal-close {
+  position: absolute;
+
+  right: 14px;
+  top: 14px;
+
+  z-index: 5;
+
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(255,255,255,.10);
+
+  border-radius: 10px;
+
+  background:
+    rgba(8,9,13,.68);
+
+  color: white;
+
+  backdrop-filter: blur(10px);
+}
+
+.modal-close i {
+  width: 17px;
+  height: 17px;
+}
+
+.modal-category {
+  color: #a78bfa;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.modal-title {
+  margin-top: 9px;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size:
+    clamp(25px, 3vw, 37px);
+
+  line-height: 1.05;
+
+  letter-spacing: -1.3px;
+
+  font-weight: 800;
+}
+
+.modal-creator {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top: 18px;
+
+  color: #9699a6;
+
+  font-size: 11px;
+}
+
+.modal-creator img {
+  width: 31px;
+  height: 31px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 18px;
+}
+
+.meta-chip {
+  padding: 7px 9px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  color: #999ca8;
+
+  font-size: 10px;
+}
+
+.prompt-box {
+  position: relative;
+
+  margin-top: 25px;
+
+  padding: 17px;
+
+  border:
+    1px solid rgba(255,255,255,.07);
+
+  border-radius: 13px;
+
+  background:
+    #0a0b0f;
+}
+
+.prompt-box-label {
+  margin-bottom: 10px;
+
+  color: #666a76;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.prompt-text {
+  color: #b9bbc5;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 11px;
+
+  line-height: 1.75;
+}
+
+.modal-actions {
+  display: flex;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+
+  padding:
+    12px 10px;
+}
+
+.copy-success {
+  display: none;
+
+  margin-top: 10px;
+
+  color: var(--success);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.copy-success.show {
+  display: block;
+}
+
+/* =========================================================
+   MOBILE DRAWER
+   ========================================================= */
+
+.mobile-menu {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 2000;
+
+  display: none;
+
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  display: block;
+
+  pointer-events: auto;
+}
+
+.mobile-overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    rgba(0,0,0,.65);
+
+  backdrop-filter: blur(5px);
+
+  opacity: 0;
+
+  transition: opacity .3s;
+}
+
+.mobile-menu.open .mobile-overlay {
+  opacity: 1;
+}
+
+.mobile-drawer {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: min(340px, 88%);
+
+  height: 100%;
+
+  padding: 25px;
+
+  background:
+    #0d0f14;
+
+  border-left:
+    1px solid var(--border);
+
+  transform:
+    translateX(100%);
+
+  transition:
+    transform .35s var(--ease);
+}
+
+.mobile-menu.open .mobile-drawer {
+  transform: translateX(0);
+}
+
+.mobile-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-nav {
+  margin-top: 45px;
+}
+
+.mobile-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 0;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.05);
+
+  color: #a4a7b2;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mobile-nav a:hover {
+  color: white;
+}
+
+.mobile-nav i {
+  width: 17px;
+  height: 17px;
+}
+
+.mobile-drawer-actions {
+  display: grid;
+
+  gap: 8px;
+
+  margin-top: 28px;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 25px;
+
+  z-index: 5000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 15px;
+
+  border:
+    1px solid rgba(255,255,255,.10);
+
+  border-radius: 11px;
+
+  background:
+    rgba(17,19,26,.94);
+
+  color: white;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.35);
+
+  transform:
+    translate(-50%, 30px);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity .3s,
+    transform .3s var(--ease);
+
+  backdrop-filter: blur(15px);
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%,0);
+}
+
+.toast i {
+  width: 15px;
+  height: 15px;
+
+  color: var(--success);
+}
+
+/* =========================================================
+   SKELETON
+   ========================================================= */
+
+.skeleton {
+  background:
+    linear-gradient(
+      90deg,
+      #11131a 25%,
+      #191c25 50%,
+      #11131a 75%
+    );
+
+  background-size: 200% 100%;
+
+  animation:
+    shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position:
+      -200% 0;
+  }
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+
+  transform:
+    translateY(25px);
+
+  transition:
+    opacity .7s var(--ease),
+    transform .7s var(--ease);
+}
+
+.reveal.visible {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .gallery {
+    columns: 4 200px;
+  }
+
+  .category-grid {
+    grid-template-columns:
+      repeat(4,1fr);
+  }
+
+  .trending-list {
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .tools-grid {
+    grid-template-columns:
+      repeat(3,1fr);
+  }
+}
+
+@media (max-width: 900px) {
+
+  .container {
+    width:
+      min(100% - 32px, 1400px);
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-actions .btn-ghost,
+  .nav-actions .desktop-create {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: grid;
+  }
+
+  .hero {
+    min-height: 620px;
+  }
+
+  .hero h1 {
+    letter-spacing: -3px;
+  }
+
+  .gallery {
+    columns: 3 190px;
+  }
+
+  .category-grid {
+    grid-template-columns:
+      repeat(3,1fr);
+  }
+
+  .tools-grid {
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .community-layout {
+    grid-template-columns: 1fr;
+
+    gap: 40px;
+  }
+
+  .footer-main {
+    grid-template-columns:
+      repeat(2,1fr);
+
+    gap: 35px;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .container {
+    width:
+      calc(100% - 24px);
+  }
+
+  .navbar {
+    height: 66px;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+
+  .logo-mark {
+    width: 31px;
+    height: 31px;
+  }
+
+  .nav-actions {
+    gap: 3px;
+  }
+
+  .hero {
+    min-height: 620px;
+  }
+
+  .hero-content {
+    padding:
+      75px 12px 70px;
+  }
+
+  .hero h1 {
+    font-size:
+      clamp(42px, 13vw, 62px);
+
+    letter-spacing: -2.8px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+  }
+
+  .hero-search {
+    margin-top: 27px;
+  }
+
+  .hero-search input {
+    padding:
+      13px 7px;
+
+    font-size: 12px;
+  }
+
+  .search-submit {
+    padding:
+      12px 13px;
+
+    font-size: 11px;
+  }
+
+  .popular {
+    justify-content: flex-start;
+  }
+
+  .section {
+    padding:
+      68px 0;
+  }
+
+  .section-header {
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 31px;
+  }
+
+  .section-header .text-link {
+    display: none;
+  }
+
+  .gallery {
+    columns: 2 150px;
+
+    column-gap: 10px;
+  }
+
+  .prompt-card {
+    margin-bottom: 10px;
+
+    border-radius: 13px;
+  }
+
+  .card-content {
+    padding: 10px;
+  }
+
+  .card-title {
+    font-size: 12px;
+  }
+
+  .card-bottom {
+    margin-top: 9px;
+  }
+
+  .creator-name {
+    max-width: 80px;
+  }
+
+  .category-grid {
+    grid-template-columns:
+      repeat(2,1fr);
+
+    gap: 9px;
+  }
+
+  .category-card {
+    height: 150px;
+  }
+
+  .trending-list {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-grid {
+    grid-template-columns:
+      repeat(2,1fr);
+
+    gap: 9px;
+  }
+
+  .tool-card {
+    min-height: 160px;
+
+    padding: 17px;
+  }
+
+  .creator-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 30px 20px;
+  }
+
+  .footer-brand {
+    grid-column: 1/-1;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .modal {
+    grid-template-columns: 1fr;
+
+    max-height:
+      calc(100vh - 24px);
+
+    border-radius: 17px;
+  }
+
+  .modal-image {
+    min-height: 270px;
+
+    max-height: 40vh;
+  }
+
+  .modal-content {
+    padding: 22px;
+
+    max-height: 55vh;
+  }
+
+  .modal-title {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .gallery {
+    columns: 1;
+  }
+
+  .category-grid {
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pm-hide-small {
+    display: none;
+  }
+
+  .hero-search {
+    padding: 5px;
+  }
+
+  .search-icon {
+    margin-left: 10px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .orb {
+    animation: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     BACKGROUND
+     ========================================================= -->
+
+<div class="page-bg" aria-hidden="true">
+  <div class="grid-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+
+
+<!-- =========================================================
+     NAVBAR
+     ========================================================= -->
+
+<header class="navbar">
+
+  <div class="container nav-inner">
+
+    <a href="#" class="logo" aria-label="PromptVerse home">
+
+      <span class="logo-mark">
+        <i data-lucide="sparkles"></i>
+      </span>
+
+      <span>PromptVerse</span>
+
+    </a>
+
+
+    <nav class="nav-links" aria-label="Main navigation">
+
+      <a href="#explore"
+         class="nav-link active">
+        Explore
+      </a>
+
+      <a href="#models"
+         class="nav-link">
+        Models
+      </a>
+
+      <a href="#categories"
+         class="nav-link">
+        Categories
+      </a>
+
+      <a href="#tools"
+         class="nav-link">
+        AI Tools
+      </a>
+
+      <a href="#community"
+         class="nav-link">
+        Community
+      </a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+      <button
+        class="icon-btn"
+        id="navSearchBtn"
+        aria-label="Search"
+      >
+        <i data-lucide="search"></i>
+      </button>
+
+      <a
+        href="#submit"
+        class="btn btn-primary desktop-create"
+      >
+        <i data-lucide="plus"></i>
+        Create Prompt
+      </a>
+
+      <a
+        href="#"
+        class="btn btn-ghost"
+      >
+        Log in
+      </a>
+
+      <a
+        href="#"
+        class="btn btn-primary pm-hide-small"
+      >
+        Sign Up
+      </a>
+
+      <button
+        class="icon-btn mobile-toggle"
+        id="mobileOpen"
+        aria-label="Open menu"
+      >
+        <i data-lucide="menu"></i>
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- =========================================================
+     MOBILE MENU
+     ========================================================= -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+  <div
+    class="mobile-overlay"
+    id="mobileOverlay"
+  ></div>
+
+  <aside
+    class="mobile-drawer"
+    aria-label="Mobile navigation"
+  >
+
+    <div class="mobile-drawer-head">
+
+      <a href="#" class="logo">
+
+        <span class="logo-mark">
+          <i data-lucide="sparkles"></i>
+        </span>
+
+        PromptVerse
+
+      </a>
+
+      <button
+        class="icon-btn"
+        id="mobileClose"
+        aria-label="Close menu"
+      >
+        <i data-lucide="x"></i>
+      </button>
+
+    </div>
+
+
+    <nav class="mobile-nav">
+
+      <a href="#explore" class="mobile-nav-link">
+        <i data-lucide="compass"></i>
+        Explore
+      </a>
+
+      <a href="#models" class="mobile-nav-link">
+        <i data-lucide="cpu"></i>
+        Models
+      </a>
+
+      <a href="#categories" class="mobile-nav-link">
+        <i data-lucide="layers"></i>
+        Categories
+      </a>
+
+      <a href="#tools" class="mobile-nav-link">
+        <i data-lucide="wand-sparkles"></i>
+        AI Tools
+      </a>
+
+      <a href="#community" class="mobile-nav-link">
+        <i data-lucide="users"></i>
+        Community
+      </a>
+
+    </nav>
+
+
+    <div class="mobile-drawer-actions">
+
+      <a
+        href="#submit"
+        class="btn btn-primary"
+      >
+        <i data-lucide="plus"></i>
+        Create Prompt
+      </a>
+
+      <a
+        href="#"
+        class="btn"
+      >
+        Log In
+      </a>
+
+      <a
+        href="#"
+        class="btn"
+      >
+        Sign Up
+      </a>
+
+    </div>
+
+  </aside>
+
+</div>
+
+
+<!-- =========================================================
+     HERO
+     ========================================================= -->
+
+<main>
+
+<section class="hero">
+
+  <div class="hero-glow"></div>
+
+
+  <div class="hero-content">
+
+    <div class="eyebrow">
+
+      <span class="eyebrow-dot"></span>
+
+      Discover prompts. Create anything.
+
+    </div>
+
+
+    <h1>
+
+      Discover the world's
+
+      <br>
+
+      <span class="gradient-text">
+        best AI prompts.
+      </span>
+
+    </h1>
+
+
+    <p class="hero-description">
+
+      Explore inspiring AI prompts, discover new creative
+      styles, and turn ideas into stunning images and videos.
+
+    </p>
+
+
+    <form
+      class="hero-search"
+      id="heroSearch"
+    >
+
+      <i
+        data-lucide="search"
+        class="search-icon"
+      ></i>
+
+      <input
+        id="searchInput"
+        type="search"
+        autocomplete="off"
+        placeholder="Search prompts, styles, models, creators..."
+        aria-label="Search prompts"
+      >
+
+      <button
+        type="submit"
+        class="search-submit"
+      >
+        Search
+      </button>
+
+    </form>
+
+
+    <div class="popular">
+
+      <span>Popular:</span>
+
+      <a href="#explore" data-search="Cinematic">
+        Cinematic
+      </a>
+
+      <a href="#explore" data-search="Portrait">
+        Portrait
+      </a>
+
+      <a href="#explore" data-search="Anime">
+        Anime
+      </a>
+
+      <a href="#explore" data-search="Product">
+        Product Photography
+      </a>
+
+      <a href="#explore" data-search="Fashion">
+        Fashion
+      </a>
+
+      <a href="#explore" data-search="Architecture">
+        Architecture
+      </a>
+
+      <a href="#explore" data-search="Fantasy">
+        Fantasy
+      </a>
+
+      <a href="#explore" data-search="3D">
+        3D
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     EXPLORE / FEATURED
+     ========================================================= -->
+
+<section
+  class="section reveal"
+  id="explore"
+>
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div>
+
+        <div class="section-kicker">
+          Curated collection
+        </div>
+
+        <h2 class="section-title">
+          Featured Prompts
+        </h2>
+
+        <p class="section-subtitle">
+          Explore exceptional creations from the community.
+        </p>
+
+      </div>
+
+      <a
+        href="#explore"
+        class="text-link"
+      >
+        View all
+        <i data-lucide="arrow-right"></i>
+      </a>
+
+    </div>
+
+
+    <!-- MODEL FILTER -->
+    <div
+      class="filter-area"
+      id="models"
+    >
+
+      <div class="filter-row">
+
+        <span class="filter-label">
+          Models
+        </span>
+
+        <button
+          class="filter-btn model-filter active"
+          data-model="All"
+        >
+          All
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Midjourney"
+        >
+          Midjourney
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Flux"
+        >
+          Flux
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Stable Diffusion"
+        >
+          Stable Diffusion
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="ChatGPT"
+        >
+          ChatGPT
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Sora"
+        >
+          Sora
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Veo"
+        >
+          Veo
+        </button>
+
+        <button
+          class="filter-btn model-filter"
+          data-model="Ideogram"
+        >
+          Ideogram
+        </button>
+
+      </div>
+
+
+      <div
+        class="filter-row"
+        style="margin-top:8px;"
+      >
+
+        <span class="filter-label">
+          Type
+        </span>
+
+        <button
+          class="filter-btn type-filter active"
+          data-type="All"
+        >
+          All
+        </button>
+
+        <button
+          class="filter-btn type-filter"
+          data-type="image"
+        >
+          <i data-lucide="image"></i>
+          Images
+        </button>
+
+        <button
+          class="filter-btn type-filter"
+          data-type="video"
+        >
+          <i data-lucide="play"></i>
+          Videos
+        </button>
+
+      </div>
+
+
+      <div
+        class="filter-row"
+        style="margin-top:8px;"
+      >
+
+        <span class="filter-label">
+          Category
+        </span>
+
+        <button
+          class="filter-btn category-filter active"
+          data-category="All"
+        >
+          All
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Photography"
+        >
+          Photography
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Anime"
+        >
+          Anime
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Fashion"
+        >
+          Fashion
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Architecture"
+        >
+          Architecture
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Fantasy"
+        >
+          Fantasy
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Product"
+        >
+          Product
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Cinematic"
+        >
+          Cinematic
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="3D"
+        >
+          3D
+        </button>
+
+        <button
+          class="filter-btn category-filter"
+          data-category="Illustration"
+        >
+          Illustration
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="sort-row">
+
+      <div class="result-count">
+        Showing
+        <strong id="resultCount">20</strong>
+        prompts
+      </div>
+
+      <select
+        id="sortSelect"
+        class="sort-select"
+        aria-label="Sort prompts"
+      >
+        <option value="trending">
+          Trending
+        </option>
+
+        <option value="newest">
+          Newest
+        </option>
+
+        <option value="likes">
+          Most Liked
+        </option>
+      </select>
+
+    </div>
+
+
+    <!-- GALLERY -->
+    <div
+      class="gallery"
+      id="gallery"
+    ></div>
+
+
+    <!-- EMPTY -->
+    <div
+      class="empty-state"
+      id="emptyState"
+    >
+
+      <div class="empty-icon">
+        <i data-lucide="search-x"></i>
+      </div>
+
+      <h3>
+        No prompts found
+      </h3>
+
+      <p>
+        Try another keyword or browse popular categories.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     CATEGORIES
+     ========================================================= -->
+
+<section
+  class="category-section reveal"
+  id="categories"
+>
+
+  <div class="section">
+
+    <div class="container">
+
+      <div class="section-header">
+
+        <div>
+
+          <div class="section-kicker">
+            Browse inspiration
+          </div>
+
+          <h2 class="section-title">
+            Explore Categories
+          </h2>
+
+          <p class="section-subtitle">
+            Find the visual language that fits your next idea.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="category-grid"
+        id="categoryGrid"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     TRENDING
+     ========================================================= -->
+
+<section class="section reveal">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div>
+
+        <div class="section-kicker">
+          What's hot
+        </div>
+
+        <h2 class="section-title">
+          Trending This Week
+        </h2>
+
+        <p class="section-subtitle">
+          Popular prompts creators are exploring right now.
+        </p>
+
+      </div>
+
+      <i
+        data-lucide="trending-up"
+        style="
+          width:22px;
+          color:#a78bfa;
+        "
+      ></i>
+
+    </div>
+
+
+    <div
+      class="trending-list"
+      id="trendingList"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     AI TOOLS
+     ========================================================= -->
+
+<section
+  class="section reveal"
+  id="tools"
+>
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <div>
+
+        <div class="section-kicker">
+          Create with AI
+        </div>
+
+        <h2 class="section-title">
+          Create with AI
+        </h2>
+
+        <p class="section-subtitle">
+          Turn your ideas into images, videos and creative assets.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="tools-grid">
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="image"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Image Generator
+        </div>
+
+        <div class="tool-description">
+          Create detailed visuals from simple text prompts.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="clapperboard"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Video Generator
+        </div>
+
+        <div class="tool-description">
+          Turn concepts into cinematic AI video ideas.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="user-round"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Portrait Generator
+        </div>
+
+        <div class="tool-description">
+          Build realistic portraits and character concepts.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="pen-tool"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Logo Generator
+        </div>
+
+        <div class="tool-description">
+          Explore creative directions for modern brand identities.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="monitor"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Wallpaper Generator
+        </div>
+
+        <div class="tool-description">
+          Create atmospheric wallpapers for every screen.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="layout-template"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Poster Generator
+        </div>
+
+        <div class="tool-description">
+          Discover prompts for striking poster compositions.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="box"></i>
+        </div>
+
+        <div class="tool-title">
+          AI Product Mockup
+        </div>
+
+        <div class="tool-description">
+          Generate premium product scenes and mockup concepts.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+
+      <a href="#explore" class="tool-card">
+
+        <div class="tool-icon">
+          <i data-lucide="wand-sparkles"></i>
+        </div>
+
+        <div class="tool-title">
+          Prompt Generator
+        </div>
+
+        <div class="tool-description">
+          Transform rough ideas into polished AI-ready prompts.
+        </div>
+
+        <div class="tool-arrow">
+          <i data-lucide="arrow-up-right"></i>
+        </div>
+
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     COMMUNITY
+     ========================================================= -->
+
+<section
+  class="community reveal"
+  id="community"
+>
+
+  <div class="section">
+
+    <div class="container community-layout">
+
+      <div class="community-copy">
+
+        <div class="section-kicker">
+          Creator community
+        </div>
+
+        <h2>
+          Built by creators,
+          <br>
+          for creators.
+        </h2>
+
+        <p>
+          Discover creative minds, follow their work,
+          and learn from the prompts behind their
+          best AI creations.
+        </p>
+
+        <a
+          href="#explore"
+          class="btn btn-primary"
+          style="margin-top:24px;"
+        >
+          Explore creators
+          <i data-lucide="arrow-right"></i>
+        </a>
+
+      </div>
+
+
+      <div
+        class="creator-grid"
+        id="creatorGrid"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     CTA
+     ========================================================= -->
+
+<section
+  class="section"
+  id="submit"
+>
+
+  <div class="container">
+
+    <div class="cta">
+
+      <div class="cta-content">
+
+        <div class="section-kicker">
+          Share your creativity
+        </div>
+
+        <h2 style="margin-top:10px;">
+          Have a prompt
+          <br>
+          worth sharing?
+        </h2>
+
+        <p>
+          Publish your creation and inspire thousands
+          of creators with the prompt behind it.
+        </p>
+
+        <button
+          class="btn btn-primary"
+          id="submitPromptBtn"
+        >
+          <i data-lucide="plus"></i>
+          Submit a Prompt
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="footer">
+
+  <div class="container">
+
+    <div class="footer-main">
+
+      <div class="footer-brand">
+
+        <a href="#" class="logo">
+
+          <span class="logo-mark">
+            <i data-lucide="sparkles"></i>
+          </span>
+
+          PromptVerse
+
+        </a>
+
+        <p>
+          Discover prompts, creative styles and
+          inspiration for the next generation of AI creators.
+        </p>
+
+        <div class="socials">
+
+          <a href="#" class="social" aria-label="Instagram">
+            <i data-lucide="instagram"></i>
+          </a>
+
+          <a href="#" class="social" aria-label="X">
+            <i data-lucide="twitter"></i>
+          </a>
+
+          <a href="#" class="social" aria-label="Discord">
+            <i data-lucide="message-circle"></i>
+          </a>
+
+          <a href="#" class="social" aria-label="YouTube">
+            <i data-lucide="youtube"></i>
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <h4>Product</h4>
+
+        <a href="#explore">
+          Explore
+        </a>
+
+        <a href="#tools">
+          AI Tools
+        </a>
+
+        <a href="#models">
+          Models
+        </a>
+
+        <a href="#categories">
+          Categories
+        </a>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <h4>Community</h4>
+
+        <a href="#community">
+          Creators
+        </a>
+
+        <a href="#submit">
+          Submit Prompt
+        </a>
+
+        <a href="#explore">
+          Leaderboard
+        </a>
+
+        <a href="#explore">
+          Trending
+        </a>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <h4>Company</h4>
+
+        <a href="#">
+          About
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
+
+        <a href="#">
+          Privacy
+        </a>
+
+        <a href="#">
+          Terms
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+      <span>
+        © 2026 PromptVerse. All rights reserved.
+      </span>
+
+      <span>
+        Discover prompts. Create anything.
+      </span>
+
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- =========================================================
+     PROMPT MODAL
+     ========================================================= -->
+
+<div
+  class="modal-backdrop"
+  id="modalBackdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalTitle"
+>
+
+  <div class="modal">
+
+    <button
+      class="modal-close"
+      id="modalClose"
+      aria-label="Close prompt"
+    >
+      <i data-lucide="x"></i>
+    </button>
+
+
+    <div class="modal-image">
+
+      <img
+        id="modalImage"
+        src=""
+        alt=""
+      >
+
+    </div>
+
+
+    <div class="modal-content">
+
+      <div
+        class="modal-category"
+        id="modalCategory"
+      >
+        Category
+      </div>
+
+      <h2
+        class="modal-title"
+        id="modalTitle"
+      >
+        Prompt title
+      </h2>
+
+
+      <div class="modal-creator">
+
+        <img
+          id="modalAvatar"
+          src=""
+          alt=""
+        >
+
+        <span id="modalCreator">
+          Creator
+        </span>
+
+      </div>
+
+
+      <div class="modal-meta">
+
+        <span
+          class="meta-chip"
+          id="modalModel"
+        >
+          Model
+        </span>
+
+        <span
+          class="meta-chip"
+          id="modalType"
+        >
+          Image
+        </span>
+
+        <span
+          class="meta-chip"
+          id="modalLikes"
+        >
+          ♥ 0
+        </span>
+
+      </div>
+
+
+      <div class="prompt-box">
+
+        <div class="prompt-box-label">
+          Prompt
+        </div>
+
+        <div
+          class="prompt-text"
+          id="modalPrompt"
+        ></div>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          class="btn btn-primary"
+          id="copyPromptBtn"
+        >
+          <i data-lucide="copy"></i>
+          Copy Prompt
+        </button>
+
+        <button
+          class="btn"
+          id="modalSaveBtn"
+        >
+          <i data-lucide="bookmark"></i>
+          Save
+        </button>
+
+        <button
+          class="btn"
+          id="shareBtn"
+        >
+          <i data-lucide="share-2"></i>
+          Share
+        </button>
+
+      </div>
+
+
+      <div
+        class="copy-success"
+        id="copySuccess"
+      >
+        ✓ Prompt copied
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+     ========================================================= -->
+
+<div
+  class="toast"
+  id="toast"
+  role="status"
+>
+
+  <i data-lucide="check-circle-2"></i>
+
+  <span id="toastText">
+    Done
+  </span>
+
+</div>
+
+
+<script>
+/* =========================================================
+   PROMPTVERSE
+   JAVASCRIPT
+   ========================================================= */
+
+/* =========================================================
+   DATA
+   ========================================================= */
+
+const prompts = [
+
+  {
+    id: 1,
+    title: "Cinematic Cyberpunk City",
+    description: "A futuristic city glowing under neon rain.",
+    prompt: "A cinematic futuristic cyberpunk city at midnight, towering glass skyscrapers, neon reflections on wet streets, atmospheric fog, cinematic lighting, volumetric light rays, ultra detailed environment, realistic materials, anamorphic composition, deep shadows, 35mm film look.",
+    image: "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=85",
+    model: "Midjourney",
+    category: "Cinematic",
+    creator: "Alex Studio",
+    creatorAvatar: "https://i.pravatar.cc/100?img=12",
+    likes: 1240,
+    type: "image",
+    createdAt: "2026-08-25"
+  },
+
+  {
+    id: 2,
+    title: "Editorial Fashion Portrait",
+    description: "High-end editorial portrait with studio lighting.",
+    prompt: "High-fashion editorial portrait of a confident young woman, sculptural black outfit, minimalist studio, soft directional lighting, subtle film grain, luxury magazine aesthetic, natural skin texture, elegant pose, 85mm lens, shallow depth of field, refined color grading.",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85",
+    model: "Flux",
+    category: "Fashion",
+    creator: "Mia Creative",
+    creatorAvatar: "https://i.pravatar.cc/100?img=47",
+    likes: 980,
+    type: "image",
+    createdAt: "2026-08-27"
+  },
+
+  {
+    id: 3,
+    title: "Minimal Product Photography",
+    description: "Premium product scene for modern brands.",
+    prompt: "Luxury skincare bottle centered on a sculptural stone pedestal, soft beige studio background, diffused sunlight, subtle shadows, premium commercial product photography, clean composition, realistic glass reflections, macro details, elegant editorial styling.",
+    image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=1000&q=85",
+    model: "Stable Diffusion",
+    category: "Product",
+    creator: "Studio North",
+    creatorAvatar: "https://i.pravatar.cc/100?img=32",
+    likes: 870,
+    type: "image",
+    createdAt: "2026-08-21"
+  },
+
+  {
+    id: 4,
+    title: "Anime Hero Character",
+    description: "Dynamic anime character concept art.",
+    prompt: "Powerful anime hero standing on a ruined futuristic rooftop, wind moving through detailed clothing, glowing energy surrounding the character, dramatic sunset sky, cinematic anime composition, expressive eyes, dynamic perspective, highly detailed illustration.",
+    image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1000&q=85",
+    model: "Midjourney",
+    category: "Anime",
+    creator: "Kaito Art",
+    creatorAvatar: "https://i.pravatar.cc/100?img=11",
+    likes: 1540,
+    type: "image",
+    createdAt: "2026-08-28"
+  },
+
+  {
+    id: 5,
+    title: "Futuristic Architecture",
+    description: "Organic architecture in a futuristic landscape.",
+    prompt: "Monumental futuristic architecture emerging from a desert landscape, flowing organic concrete structures, enormous glass surfaces, soft morning haze, minimal human presence, architectural photography, realistic shadows, cinematic wide angle, sophisticated brutalist design.",
+    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1000&q=85",
+    model: "Flux",
+    category: "Architecture",
+    creator: "Form Lab",
+    creatorAvatar: "https://i.pravatar.cc/100?img=68",
+    likes: 720,
+    type: "image",
+    createdAt: "2026-08-18"
+  },
+
+  {
+    id: 6,
+    title: "Mystical Forest",
+    description: "Atmospheric fantasy environment.",
+    prompt: "Enchanted ancient forest at blue hour, enormous trees covered in glowing moss, tiny floating particles, mysterious fog between the roots, magical warm light in the distance, cinematic fantasy environment, painterly realism, extremely detailed.",
+    image: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
+    model: "Stable Diffusion",
+    category: "Fantasy",
+    creator: "Luna Frames",
+    creatorAvatar: "https://i.pravatar.cc/100?img=44",
+    likes: 1120,
+    type: "image",
+    createdAt: "2026-08-23"
+  },
+
+  {
+    id: 7,
+    title: "Luxury Watch Campaign",
+    description: "Cinematic luxury product campaign.",
+    prompt: "Luxury mechanical wristwatch floating above black volcanic stone, dramatic single-source lighting, sharp metallic reflections, deep black background, subtle smoke, premium advertising photography, macro lens, extremely realistic materials, high contrast.",
+    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+    model: "Midjourney",
+    category: "Product",
+    creator: "Noir Studio",
+    creatorAvatar: "https://i.pravatar.cc/100?img=5",
+    likes: 1350,
+    type: "image",
+    createdAt: "2026-08-24"
+  },
+
+  {
+    id: 8,
+    title: "Neon Tokyo Rain",
+    description: "A cinematic street scene in Tokyo.",
+    prompt: "Tokyo street at night during heavy rain, glowing Japanese signs, pedestrians with transparent umbrellas, reflections across wet pavement, cinematic cyberpunk mood, realistic urban photography, 35mm lens, atmospheric depth, subtle motion blur.",
+    image: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=85",
+    model: "Flux",
+    category: "Photography",
+    creator: "Ken Visuals",
+    creatorAvatar: "https://i.pravatar.cc/100?img=14",
+    likes: 1890,
+    type: "image",
+    createdAt: "2026-08-29"
+  },
+
+  {
+    id: 9,
+    title: "Futuristic Woman",
+    description: "Elegant sci-fi portrait.",
+    prompt: "Elegant futuristic woman with subtle cybernetic details, silver sculptural clothing, soft blue studio light, dark background, realistic skin texture, sophisticated science fiction editorial, 85mm portrait lens, shallow depth of field.",
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=1000&q=85",
+    model: "Ideogram",
+    category: "Photography",
+    creator: "Nova Studio",
+    creatorAvatar: "https://i.pravatar.cc/100?img=49",
+    likes: 920,
+    type: "image",
+    createdAt: "2026-08-26"
+  },
+
+  {
+    id: 10,
+    title: "3D Glass Character",
+    description: "Minimal 3D character render.",
+    prompt: "Cute abstract 3D character made from translucent glass, soft pastel environment, studio lighting, realistic caustics, smooth rounded geometry, premium 3D illustration, minimal composition, soft shadows, octane render aesthetic.",
+    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1000&q=85",
+    model: "Stable Diffusion",
+    category: "3D",
+    creator: "Pixel Works",
+    creatorAvatar: "https://i.pravatar.cc/100?img=23",
+    likes: 650,
+    type: "image",
+    createdAt: "2026-08-20"
+  },
+
+  {
+    id: 11,
+    title: "Cinematic Desert Journey",
+    description: "Wide cinematic landscape.",
+    prompt: "Lone traveler crossing an enormous golden desert at sunset, distant mountains, dramatic clouds, warm cinematic light, long shadows, epic scale, realistic landscape photography, subtle film grain, anamorphic widescreen composition.",
+    image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1000&q=85",
+    model: "Midjourney",
+    category: "Cinematic",
+    creator: "Frame Theory",
+    creatorAvatar: "https://i.pravatar.cc/100?img=53",
+    likes: 760,
+    type: "image",
+    createdAt: "2026-08-16"
+  },
+
+  {
+    id: 12,
+    title: "Animated Product Reveal",
+    description: "Short cinematic product reveal.",
+    prompt: "Cinematic product reveal of a premium wireless headphone emerging from darkness, slow camera push-in, controlled studio lighting, subtle floating particles, glossy material reflections, luxury technology commercial, realistic motion, dramatic final hero shot.",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85",
+    model: "Sora",
+    category: "Product",
+    creator: "Motion House",
+    creatorAvatar: "https://i.pravatar.cc/100?img=60",
+    likes: 1450,
+    type: "video",
+    createdAt: "2026-08-28"
+  },
+
+  {
+    id: 13,
+    title: "Fantasy Castle Reveal",
+    description: "Epic fantasy video concept.",
+    prompt: "Slow cinematic camera movement toward a massive fantasy castle above the clouds, sunrise breaking through mist, flying birds, enormous mountain peaks, magical atmosphere, realistic environmental motion, epic fantasy film trailer aesthetic.",
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=85",
+    model: "Veo",
+    category: "Fantasy",
+    creator: "Epic Frames",
+    creatorAvatar: "https://i.pravatar.cc/100?img=57",
+    likes: 1320,
+    type: "video",
+    createdAt: "2026-08-27"
+  },
+
+  {
+    id: 14,
+    title: "Editorial Street Fashion",
+    description: "Modern fashion street photography.",
+    prompt: "Editorial street fashion portrait in a modern European city, oversized tailored coat, architectural background, overcast natural light, candid confident expression, luxury magazine photography, subtle grain, realistic skin and fabric texture.",
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85",
+    model: "Flux",
+    category: "Fashion",
+    creator: "Urban Muse",
+    creatorAvatar: "https://i.pravatar.cc/100?img=36",
+    likes: 1010,
+    type: "image",
+    createdAt: "2026-08-22"
+  },
+
+  {
+    id: 15,
+    title: "Minimal Japanese Interior",
+    description: "Calm architectural interior.",
+    prompt: "Minimal Japanese interior with natural wood, soft linen furniture, large paper windows, morning sunlight, subtle shadows, indoor plants, quiet luxury aesthetic, architectural photography, warm neutral palette, clean composition.",
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85",
+    model: "Ideogram",
+    category: "Architecture",
+    creator: "Mono Space",
+    creatorAvatar: "https://i.pravatar.cc/100?img=20",
+    likes: 840,
+    type: "image",
+    createdAt: "2026-08-19"
+  },
+
+  {
+    id: 16,
+    title: "Cute Anime Café",
+    description: "Warm anime slice-of-life scene.",
+    prompt: "Cozy anime café during golden hour, warm sunlight through large windows, detailed wooden interior, young character reading a book, plants and small decorations, soft expressive anime style, peaceful atmosphere, cinematic composition.",
+    image: "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=1000&q=85",
+    model: "Midjourney",
+    category: "Anime",
+    creator: "Momo Studio",
+    creatorAvatar: "https://i.pravatar.cc/100?img=25",
+    likes: 1180,
+    type: "image",
+    createdAt: "2026-08-25"
+  },
+
+  {
+    id: 17,
+    title: "Luxury Car Motion",
+    description: "High-end automotive commercial.",
+    prompt: "Black luxury sports car driving through a rain-soaked city at night, headlights reflecting on wet asphalt, smooth tracking camera, subtle tire spray, cinematic motion blur, premium automotive commercial, realistic reflections, dramatic lighting.",
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=85",
+    model: "Sora",
+    category: "Cinematic",
+    creator: "Drive Films",
+    creatorAvatar: "https://i.pravatar.cc/100?img=8",
+    likes: 1670,
+    type: "video",
+    createdAt: "2026-08-29"
+  },
+
+  {
+    id: 18,
+    title: "Abstract 3D Sculpture",
+    description: "Modern abstract digital sculpture.",
+    prompt: "Abstract flowing 3D sculpture with polished metallic surfaces, deep indigo background, soft studio lighting, subtle reflections, elegant curves, premium digital art, octane render, minimal composition, high-end design showcase.",
+    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1000&q=85",
+    model: "Stable Diffusion",
+    category: "3D",
+    creator: "Digital Matter",
+    creatorAvatar: "https://i.pravatar.cc/100?img=15",
+    likes: 590,
+    type: "image",
+    createdAt: "2026-08-17"
+  },
+
+  {
+    id: 19,
+    title: "Modern Brand Illustration",
+    description: "Clean editorial illustration for brands.",
+    prompt: "Modern editorial illustration showing creative collaboration, bold geometric shapes, elegant characters, minimal vector aesthetic, sophisticated limited palette, clean negative space, premium technology brand visual language.",
+    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1000&q=85",
+    model: "ChatGPT",
+    category: "Illustration",
+    creator: "Form & Color",
+    creatorAvatar: "https://i.pravatar.cc/100?img=33",
+    likes: 480,
+    type: "image",
+    createdAt: "2026-08-15"
+  },
+
+  {
+    id: 20,
+    title: "Cinematic Ocean Journey",
+    description: "Epic ocean sequence for AI video.",
+    prompt: "Cinematic aerial journey above enormous ocean waves at sunrise, golden light reflecting across the water, distant sailing vessel, realistic atmospheric haze, slow smooth camera movement, epic documentary cinematography, natural motion and lighting.",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
+    model: "Veo",
+    category: "Cinematic",
+    creator: "Ocean Films",
+    creatorAvatar: "https://i.pravatar.cc/100?img=19",
+    likes: 1280,
+    type: "video",
+    createdAt: "2026-08-26"
+  }
+
+];
+
+
+/* =========================================================
+   CATEGORY DATA
+   ========================================================= */
+
+const categories = [
+
+  {
+    name: "Photography",
+    count: "12.4k",
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Anime",
+    count: "9.8k",
+    image: "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Fashion",
+    count: "8.6k",
+    image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Architecture",
+    count: "7.3k",
+    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Fantasy",
+    count: "10.2k",
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Product",
+    count: "6.7k",
+    image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "3D",
+    count: "5.4k",
+    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Characters",
+    count: "11.1k",
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Cinematic",
+    count: "13.6k",
+    image: "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Illustration",
+    count: "7.9k",
+    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Logo",
+    count: "4.2k",
+    image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=700&q=80"
+  },
+
+  {
+    name: "Wallpaper",
+    count: "9.1k",
+    image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=80"
+  }
+
+];
+
+
+/* =========================================================
+   CREATOR DATA
+   ========================================================= */
+
+const creators = [
+
+  {
+    name: "Alex Morgan",
+    username: "@alexstudio",
+    followers: "18.4k",
+    prompts: 126,
+    avatar: "https://i.pravatar.cc/150?img=12"
+  },
+
+  {
+    name: "Mia Carter",
+    username: "@miacreative",
+    followers: "14.8k",
+    prompts: 94,
+    avatar: "https://i.pravatar.cc/150?img=47"
+  },
+
+  {
+    name: "Ken Ito",
+    username: "@kenvisuals",
+    followers: "12.1k",
+    prompts: 82,
+    avatar: "https://i.pravatar.cc/150?img=14"
+  },
+
+  {
+    name: "Luna Chen",
+    username: "@lunaframes",
+    followers: "10.7k",
+    prompts: 73,
+    avatar: "https://i.pravatar.cc/150?img=44"
+  },
+
+  {
+    name: "Noah Wilson",
+    username: "@noirstudio",
+    followers: "9.8k",
+    prompts: 68,
+    avatar: "https://i.pravatar.cc/150?img=5"
+  },
+
+  {
+    name: "Maya Patel",
+    username: "@pixelworks",
+    followers: "8.6k",
+    prompts: 57,
+    avatar: "https://i.pravatar.cc/150?img=23"
+  }
+
+];
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let state = {
+  search: "",
+  model: "All",
+  category: "All",
+  type: "All",
+  sort: "trending",
+  activePrompt: null
+};
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function getSaved() {
+
+  try {
+
+    return JSON.parse(
+      localStorage.getItem("promptverse_saved") || "[]"
+    );
+
+  } catch {
+
+    return [];
+
+  }
+
+}
+
+function setSaved(items) {
+
+  localStorage.setItem(
+    "promptverse_saved",
+    JSON.stringify(items)
+  );
+
+}
+
+function getLiked() {
+
+  try {
+
+    return JSON.parse(
+      localStorage.getItem("promptverse_liked") || "[]"
+    );
+
+  } catch {
+
+    return [];
+
+  }
+
+}
+
+function setLiked(items) {
+
+  localStorage.setItem(
+    "promptverse_liked",
+    JSON.stringify(items)
+  );
+
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function formatNumber(number) {
+
+  if (number >= 1000) {
+
+    return (
+      (number / 1000)
+        .toFixed(number >= 10000 ? 0 : 1)
+        .replace(".0", "")
+      + "k"
+    );
+
+  }
+
+  return number;
+
+}
+
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+function getFilteredPrompts() {
+
+  let result = [...prompts];
+
+
+  /* SEARCH */
+
+  const query =
+    state.search.trim().toLowerCase();
+
+  if (query) {
+
+    result = result.filter(prompt => {
+
+      const searchable = [
+
+        prompt.title,
+        prompt.description,
+        prompt.prompt,
+        prompt.model,
+        prompt.category,
+        prompt.creator
+
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchable.includes(query);
+
+    });
+
+  }
+
+
+  /* MODEL */
+
+  if (state.model !== "All") {
+
+    result = result.filter(
+      prompt =>
+        prompt.model === state.model
+    );
+
+  }
+
+
+  /* CATEGORY */
+
+  if (state.category !== "All") {
+
+    result = result.filter(
+      prompt =>
+        prompt.category === state.category
+    );
+
+  }
+
+
+  /* TYPE */
+
+  if (state.type !== "All") {
+
+    result = result.filter(
+      prompt =>
+        prompt.type === state.type
+    );
+
+  }
+
+
+  /* SORT */
+
+  if (state.sort === "likes") {
+
+    result.sort(
+      (a,b) => b.likes - a.likes
+    );
+
+  }
+
+  else if (state.sort === "newest") {
+
+    result.sort(
+      (a,b) =>
+        new Date(b.createdAt) -
+        new Date(a.createdAt)
+    );
+
+  }
+
+  else {
+
+    result.sort(
+      (a,b) => b.likes - a.likes
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   RENDER CARD
+   ========================================================= */
+
+function renderCard(prompt, index) {
+
+  const saved =
+    getSaved().includes(prompt.id);
+
+  const liked =
+    getLiked().includes(prompt.id);
+
+  const video =
+    prompt.type === "video";
+
+
+  return `
+
+    <article
+      class="prompt-card"
+      data-id="${prompt.id}"
+      style="animation-delay:${Math.min(index * 35, 400)}ms"
+      tabindex="0"
+      role="button"
+      aria-label="View ${escapeHTML(prompt.title)}"
+    >
+
+      <div class="card-media">
+
+        <img
+          src="${prompt.image}"
+          alt="${escapeHTML(prompt.title)}"
+          loading="lazy"
+          onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=80';"
+        >
+
+        <div class="card-gradient"></div>
+
+
+        <span class="model-badge">
+          ${escapeHTML(prompt.model)}
+        </span>
+
+
+        ${
+          video
+          ? `
+            <span
+              class="video-badge"
+              aria-label="Video prompt"
+            >
+              <i data-lucide="play"></i>
+            </span>
+          `
+          : ""
+        }
+
+
+        <div class="card-actions">
+
+          <button
+            class="view-prompt"
+            data-view="${prompt.id}"
+          >
+            View Prompt
+            <i data-lucide="arrow-up-right"></i>
+          </button>
+
+
+          <button
+            class="card-save ${saved ? "saved" : ""}"
+            data-save="${prompt.id}"
+            aria-label="Save prompt"
+          >
+            <i data-lucide="bookmark"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="card-content">
+
+        <div class="card-category">
+          ${escapeHTML(prompt.category)}
+        </div>
+
+        <div class="card-title">
+          ${escapeHTML(prompt.title)}
+        </div>
+
+
+        <div class="card-bottom">
+
+          <div class="creator">
+
+            <img
+              class="avatar"
+              src="${prompt.creatorAvatar}"
+              alt=""
+              loading="lazy"
+            >
+
+            <span class="creator-name">
+              ${escapeHTML(prompt.creator)}
+            </span>
+
+          </div>
+
+
+          <button
+            class="like-btn ${liked ? "liked" : ""}"
+            data-like="${prompt.id}"
+            aria-label="Like prompt"
+          >
+
+            <i data-lucide="heart"></i>
+
+            <span>
+              ${formatNumber(prompt.likes)}
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER GALLERY
+   ========================================================= */
+
+function renderGallery() {
+
+  const gallery =
+    document.getElementById("gallery");
+
+  const empty =
+    document.getElementById("emptyState");
+
+  const count =
+    document.getElementById("resultCount");
+
+
+  const result =
+    getFilteredPrompts();
+
+
+  count.textContent =
+    result.length;
+
+
+  if (!result.length) {
+
+    gallery.innerHTML = "";
+
+    empty.classList.add("show");
+
+    return;
+
+  }
+
+
+  empty.classList.remove("show");
+
+
+  gallery.innerHTML =
+    result
+      .map(renderCard)
+      .join("");
+
+
+  lucide.createIcons();
+
+}
+
+
+/* =========================================================
+   RENDER CATEGORIES
+   ========================================================= */
+
+function renderCategories() {
+
+  const grid =
+    document.getElementById("categoryGrid");
+
+
+  grid.innerHTML =
+    categories
+      .map(category => `
+
+        <a
+          href="#explore"
+          class="category-card"
+          data-category-card="${escapeHTML(category.name)}"
+        >
+
+          <img
+            src="${category.image}"
+            alt="${escapeHTML(category.name)}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80';"
+          >
+
+          <div class="category-overlay">
+
+            <div class="category-name">
+              ${escapeHTML(category.name)}
+            </div>
+
+            <div class="category-count">
+              ${category.count} prompts
+            </div>
+
+          </div>
+
+        </a>
+
+      `)
+      .join("");
+
+
+  lucide.createIcons();
+
+}
+
+
+/* =========================================================
+   RENDER TRENDING
+   ========================================================= */
+
+function renderTrending() {
+
+  const list =
+    document.getElementById("trendingList");
+
+
+  const trending =
+    [...prompts]
+      .sort((a,b) => b.likes - a.likes)
+      .slice(0,8);
+
+
+  list.innerHTML =
+    trending
+      .map((prompt,index) => `
+
+        <article
+          class="trending-item"
+          data-view="${prompt.id}"
+          tabindex="0"
+          role="button"
+        >
+
+          <div class="rank">
+            ${String(index + 1).padStart(2,"0")}
+          </div>
+
+
+          <div class="trending-thumb">
+
+            <img
+              src="${prompt.image}"
+              alt="${escapeHTML(prompt.title)}"
+              loading="lazy"
+            >
+
+          </div>
+
+
+          <div class="trending-info">
+
+            <div class="trending-title">
+              ${escapeHTML(prompt.title)}
+            </div>
+
+            <div class="trending-creator">
+              ${escapeHTML(prompt.creator)}
+            </div>
+
+            <div class="trending-model">
+              ${escapeHTML(prompt.model)}
+            </div>
+
+          </div>
+
+
+          <div class="trending-likes">
+            ♥ ${formatNumber(prompt.likes)}
+          </div>
+
+        </article>
+
+      `)
+      .join("");
+
+
+  lucide.createIcons();
+
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+function openModal(id) {
+
+  const prompt =
+    prompts.find(
+      item => item.id === Number(id)
+    );
+
+  if (!prompt) return;
+
+
+  state.activePrompt =
+    prompt;
+
+
+  document.getElementById("modalImage").src =
+    prompt.image;
+
+  document.getElementById("modalImage").alt =
+    prompt.title;
+
+  document.getElementById("modalTitle").textContent =
+    prompt.title;
+
+  document.getElementById("modalCategory").textContent =
+    prompt.category;
+
+  document.getElementById("modalCreator").textContent =
+    prompt.creator;
+
+  document.getElementById("modalAvatar").src =
+    prompt.creatorAvatar;
+
+  document.getElementById("modalModel").textContent =
+    prompt.model;
+
+  document.getElementById("modalType").textContent =
+    prompt.type === "video"
+      ? "Video"
+      : "Image";
+
+  document.getElementById("modalLikes").textContent =
+    "♥ " + formatNumber(prompt.likes);
+
+  document.getElementById("modalPrompt").textContent =
+    prompt.prompt;
+
+
+  updateModalSaveButton();
+
+
+  document.getElementById("copySuccess")
+    .classList.remove("show");
+
+
+  document
+    .getElementById("modalBackdrop")
+    .classList.add("open");
+
+
+  document.body.classList.add("modal-open");
+
+
+  lucide.createIcons();
+
+}
+
+
+function closeModal() {
+
+  document
+    .getElementById("modalBackdrop")
+    .classList.remove("open");
+
+
+  document.body.classList.remove("modal-open");
+
+
+  state.activePrompt = null;
+
+}
+
+
+function updateModalSaveButton() {
+
+  const button =
+    document.getElementById("modalSaveBtn");
+
+  if (!state.activePrompt) return;
+
+
+  const saved =
+    getSaved()
+      .includes(state.activePrompt.id);
+
+
+  button.innerHTML =
+    saved
+      ? `
+        <i data-lucide="bookmark-check"></i>
+        Saved
+      `
+      : `
+        <i data-lucide="bookmark"></i>
+        Save
+      `;
+
+
+  lucide.createIcons();
+
+}
+
+
+/* =========================================================
+   COPY
+   ========================================================= */
+
+async function copyPrompt() {
+
+  if (!state.activePrompt) return;
+
+
+  const text =
+    state.activePrompt.prompt;
+
+
+  try {
+
+    await navigator.clipboard.writeText(text);
+
+  } catch {
+
+    const textarea =
+      document.createElement("textarea");
+
+    textarea.value = text;
+
+    document.body.appendChild(textarea);
+
+    textarea.select();
+
+    document.execCommand("copy");
+
+    textarea.remove();
+
+  }
+
+
+  const success =
+    document.getElementById("copySuccess");
+
+
+  success.classList.add("show");
+
+
+  showToast("Prompt copied");
+
+
+  setTimeout(() => {
+
+    success.classList.remove("show");
+
+  }, 2000);
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+function toggleSave(id) {
+
+  id = Number(id);
+
+
+  let saved =
+    getSaved();
+
+
+  if (saved.includes(id)) {
+
+    saved =
+      saved.filter(item => item !== id);
+
+    showToast("Removed from saved");
+
+  }
+
+  else {
+
+    saved.push(id);
+
+    showToast("Prompt saved");
+
+  }
+
+
+  setSaved(saved);
+
+
+  renderGallery();
+
+
+  if (
+    state.activePrompt &&
+    state.activePrompt.id === id
+  ) {
+
+    updateModalSaveButton();
+
+  }
+
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+function toggleLike(id, button) {
+
+  id = Number(id);
+
+
+  const prompt =
+    prompts.find(
+      item => item.id === id
+    );
+
+
+  if (!prompt) return;
+
+
+  let liked =
+    getLiked();
+
+
+  if (liked.includes(id)) {
+
+    liked =
+      liked.filter(item => item !== id);
+
+    prompt.likes =
+      Math.max(0, prompt.likes - 1);
+
+  }
+
+  else {
+
+    liked.push(id);
+
+    prompt.likes += 1;
+
+  }
+
+
+  setLiked(liked);
+
+
+  button.classList.toggle(
+    "liked",
+    liked.includes(id)
+  );
+
+
+  button.classList.remove("pop");
+
+  void button.offsetWidth;
+
+  button.classList.add("pop");
+
+
+  const span =
+    button.querySelector("span");
+
+
+  if (span) {
+
+    span.textContent =
+      formatNumber(prompt.likes);
+
+  }
+
+
+  if (
+    state.activePrompt &&
+    state.activePrompt.id === id
+  ) {
+
+    document.getElementById("modalLikes")
+      .textContent =
+        "♥ " + formatNumber(prompt.likes);
+
+  }
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+function showToast(message) {
+
+  const toast =
+    document.getElementById("toast");
+
+  const text =
+    document.getElementById("toastText");
+
+
+  text.textContent =
+    message;
+
+
+  toast.classList.add("show");
+
+
+  clearTimeout(toastTimer);
+
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
+
+document
+  .querySelectorAll(".model-filter")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(".model-filter")
+          .forEach(item =>
+            item.classList.remove("active")
+          );
+
+
+        button.classList.add("active");
+
+
+        state.model =
+          button.dataset.model;
+
+
+        renderGallery();
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(".category-filter")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(".category-filter")
+          .forEach(item =>
+            item.classList.remove("active")
+          );
+
+
+        button.classList.add("active");
+
+
+        state.category =
+          button.dataset.category;
+
+
+        renderGallery();
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(".type-filter")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(".type-filter")
+          .forEach(item =>
+            item.classList.remove("active")
+          );
+
+
+        button.classList.add("active");
+
+
+        state.type =
+          button.dataset.type;
+
+
+        renderGallery();
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   SORT
+   ========================================================= */
+
+document
+  .getElementById("sortSelect")
+  .addEventListener(
+    "change",
+    event => {
+
+      state.sort =
+        event.target.value;
+
+      renderGallery();
+
+    }
+  );
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+const searchInput =
+  document.getElementById("searchInput");
+
+
+document
+  .getElementById("heroSearch")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      state.search =
+        searchInput.value;
+
+
+      renderGallery();
+
+
+      document
+        .getElementById("explore")
+        .scrollIntoView({
+          behavior:
+            window.matchMedia(
+              "(prefers-reduced-motion: reduce)"
+            ).matches
+              ? "auto"
+              : "smooth"
+        });
+
+    }
+  );
+
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    state.search =
+      searchInput.value;
+
+
+    renderGallery();
+
+  }
+);
+
+
+/* =========================================================
+   POPULAR SEARCH
+   ========================================================= */
+
+document
+  .querySelectorAll("[data-search]")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+
+        const value =
+          link.dataset.search;
+
+
+        searchInput.value =
+          value;
+
+
+        state.search =
+          value;
+
+
+        renderGallery();
+
+
+        document
+          .getElementById("explore")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   NAV SEARCH
+   ========================================================= */
+
+document
+  .getElementById("navSearchBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById("explore")
+        .scrollIntoView({
+          behavior: "smooth"
+        });
+
+
+      setTimeout(() => {
+
+        searchInput.focus();
+
+      }, 500);
+
+    }
+  );
+
+
+/* =========================================================
+   GALLERY EVENTS
+   ========================================================= */
+
+document
+  .getElementById("gallery")
+  .addEventListener(
+    "click",
+    event => {
+
+      const view =
+        event.target.closest("[data-view]");
+
+
+      if (view) {
+
+        event.stopPropagation();
+
+        openModal(
+          view.dataset.view
+        );
+
+        return;
+
+      }
+
+
+      const save =
+        event.target.closest("[data-save]");
+
+
+      if (save) {
+
+        event.stopPropagation();
+
+        toggleSave(
+          save.dataset.save
+        );
+
+        return;
+
+      }
+
+
+      const like =
+        event.target.closest("[data-like]");
+
+
+      if (like) {
+
+        event.stopPropagation();
+
+        toggleLike(
+          like.dataset.like,
+          like
+        );
+
+        return;
+
+      }
+
+
+      const card =
+        event.target.closest(".prompt-card");
+
+
+      if (card) {
+
+        openModal(
+          card.dataset.id
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   KEYBOARD CARD ACCESSIBILITY
+   ========================================================= */
+
+document
+  .getElementById("gallery")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key !== "Enter" &&
+        event.key !== " "
+      ) return;
+
+
+      const card =
+        event.target.closest(".prompt-card");
+
+
+      if (!card) return;
+
+
+      event.preventDefault();
+
+
+      openModal(
+        card.dataset.id
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   TRENDING EVENTS
+   ========================================================= */
+
+document
+  .getElementById("trendingList")
+  .addEventListener(
+    "click",
+    event => {
+
+      const item =
+        event.target.closest(
+          "[data-view]"
+        );
+
+
+      if (!item) return;
+
+
+      openModal(
+        item.dataset.view
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   CATEGORY EVENTS
+   ========================================================= */
+
+document
+  .getElementById("categoryGrid")
+  .addEventListener(
+    "click",
+    event => {
+
+      const card =
+        event.target.closest(
+          "[data-category-card]"
+        );
+
+
+      if (!card) return;
+
+
+      event.preventDefault();
+
+
+      const category =
+        card.dataset.categoryCard;
+
+
+      state.category =
+        category;
+
+
+      document
+        .querySelectorAll(".category-filter")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.category === category
+          );
+
+        });
+
+
+      renderGallery();
+
+
+      document
+        .getElementById("explore")
+        .scrollIntoView({
+          behavior: "smooth"
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   MODAL EVENTS
+   ========================================================= */
+
+document
+  .getElementById("modalClose")
+  .addEventListener(
+    "click",
+    closeModal
+  );
+
+
+document
+  .getElementById("modalBackdrop")
+  .addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target.id ===
+        "modalBackdrop"
+      ) {
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("copyPromptBtn")
+  .addEventListener(
+    "click",
+    copyPrompt
+  );
+
+
+document
+  .getElementById("modalSaveBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!state.activePrompt) return;
+
+
+      toggleSave(
+        state.activePrompt.id
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+document
+  .getElementById("shareBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      if (!state.activePrompt) return;
+
+
+      const prompt =
+        state.activePrompt;
+
+
+      const shareData = {
+
+        title:
+          prompt.title,
+
+        text:
+          prompt.prompt,
+
+        url:
+          window.location.href
+
+      };
+
+
+      try {
+
+        if (
+          navigator.share
+        ) {
+
+          await navigator.share(
+            shareData
+          );
+
+        }
+
+        else {
+
+          await navigator.clipboard.writeText(
+            window.location.href
+          );
+
+          showToast(
+            "Link copied"
+          );
+
+        }
+
+      } catch {
+
+        /* User cancelled share */
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      closeModal();
+
+      closeMobileMenu();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+const mobileMenu =
+  document.getElementById("mobileMenu");
+
+
+function openMobileMenu() {
+
+  mobileMenu.classList.add("open");
+
+  document.body.classList.add(
+    "modal-open"
+  );
+
+}
+
+
+function closeMobileMenu() {
+
+  mobileMenu.classList.remove("open");
+
+  if (
+    !document
+      .getElementById("modalBackdrop")
+      .classList.contains("open")
+  ) {
+
+    document.body.classList.remove(
+      "modal-open"
+    );
+
+  }
+
+}
+
+
+document
+  .getElementById("mobileOpen")
+  .addEventListener(
+    "click",
+    openMobileMenu
+  );
+
+
+document
+  .getElementById("mobileClose")
+  .addEventListener(
+    "click",
+    closeMobileMenu
+  );
+
+
+document
+  .getElementById("mobileOverlay")
+  .addEventListener(
+    "click",
+    closeMobileMenu
+  );
+
+
+document
+  .querySelectorAll(".mobile-nav-link")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      closeMobileMenu
+    );
+
+  });
+
+
+/* =========================================================
+   FOLLOW BUTTONS
+   ========================================================= */
+
+function renderCreators() {
+
+  const grid =
+    document.getElementById(
+      "creatorGrid"
+    );
+
+
+  grid.innerHTML =
+    creators
+      .map(creator => `
+
+        <article class="creator-card">
+
+          <img
+            class="creator-avatar"
+            src="${creator.avatar}"
+            alt="${escapeHTML(creator.name)}"
+            loading="lazy"
+          >
+
+
+          <div class="creator-info">
+
+            <div class="creator-fullname">
+              ${escapeHTML(creator.name)}
+            </div>
+
+            <div class="creator-username">
+              ${escapeHTML(creator.username)}
+            </div>
+
+            <div class="creator-stats">
+              ${creator.followers} followers ·
+              ${creator.prompts} prompts
+            </div>
+
+          </div>
+
+
+          <button
+            class="follow-btn"
+            data-follow="${escapeHTML(creator.username)}"
+          >
+            Follow
+          </button>
+
+        </article>
+
+      `)
+      .join("");
+
+}
+
+
+document
+  .getElementById("creatorGrid")
+  .addEventListener(
+    "click",
+    event => {
+
+      const button =
+        event.target.closest(
+          "[data-follow]"
+        );
+
+
+      if (!button) return;
+
+
+      button.classList.toggle(
+        "following"
+      );
+
+
+      button.textContent =
+        button.classList.contains(
+          "following"
+        )
+          ? "Following"
+          : "Follow";
+
+    }
+  );
+
+
+/* =========================================================
+   SUBMIT PROMPT DEMO
+   ========================================================= */
+
+document
+  .getElementById("submitPromptBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      showToast(
+        "Prompt submission opened"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+const revealObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (
+          entry.isIntersecting
+        ) {
+
+          entry.target
+            .classList
+            .add("visible");
+
+          revealObserver.unobserve(
+            entry.target
+          );
+
+        }
+
+      });
+
+    },
+    {
+      threshold: .10
+    }
+  );
+
+
+document
+  .querySelectorAll(".reveal")
+  .forEach(element => {
+
+    revealObserver.observe(
+      element
+    );
+
+  });
+
+
+/* =========================================================
+   ACTIVE NAVIGATION
+   ========================================================= */
+
+const navLinks =
+  document.querySelectorAll(
+    ".nav-link"
+  );
+
+
+const sections = [
+  "explore",
+  "models",
+  "categories",
+  "tools",
+  "community"
+];
+
+
+const navObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (
+          !entry.isIntersecting
+        ) return;
+
+
+        navLinks.forEach(link => {
+
+          link.classList.remove(
+            "active"
+          );
+
+
+          const href =
+            link.getAttribute("href");
+
+
+          if (
+            href ===
+            "#" + entry.target.id
+          ) {
+
+            link.classList.add(
+              "active"
+            );
+
+          }
+
+        });
+
+      });
+
+    },
+    {
+      rootMargin:
+        "-35% 0px -55% 0px"
+    }
+  );
+
+
+sections.forEach(id => {
+
+  const element =
+    document.getElementById(id);
+
+  if (element) {
+
+    navObserver.observe(
+      element
+    );
+
+  }
+
+});
+
+
+/* =========================================================
+   IMAGE ERROR FALLBACK
+   ========================================================= */
+
+document.addEventListener(
+  "error",
+  event => {
+
+    const image =
+      event.target;
+
+
+    if (
+      image.tagName !== "IMG"
+    ) return;
+
+
+    if (
+      image.dataset.fallbackUsed
+    ) return;
+
+
+    image.dataset.fallbackUsed =
+      "true";
+
+
+    image.src =
+      "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=80";
+
+  },
+  true
+);
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+function init() {
+
+  renderGallery();
+
+  renderCategories();
+
+  renderTrending();
+
+  renderCreators();
+
+  lucide.createIcons();
+
+}
+
+
+init();
+
+</script>
+
+</body>
+</html>
+

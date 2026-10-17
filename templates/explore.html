@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Explore — PromptMall{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-5 py-12 sm:px-6">
+  <div class="mb-7">
+    <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Explore Prompts</h1>
+    <p class="soft mt-2">A curated library for your next extraordinary output.</p>
+  </div>
+
+  <form class="surface mb-5 flex flex-col gap-3 rounded-2xl p-4 lg:flex-row lg:items-center" method="get">
+    <div class="relative flex-1">
+      <i data-lucide="search" class="absolute left-3 top-3 h-5 w-5 soft"></i>
+      <input name="q" value="{{ current_q }}" class="form-control pl-10" type="search" placeholder="Search the prompt library...">
+    </div>
+    <select name="category" class="form-control lg:w-52" onchange="this.form.submit()">
+      <option value="All Categories" {% if current_category == 'All Categories' %}selected{% endif %}>All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.name }}" {% if current_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="filter" class="form-control lg:w-44" onchange="this.form.submit()">
+      <option value="All" {% if current_filter == 'All' %}selected{% endif %}>All</option>
+      <option value="Image" {% if current_filter == 'Image' %}selected{% endif %}>Image</option>
+      <option value="Video" {% if current_filter == 'Video' %}selected{% endif %}>Video</option>
+    </select>
+  </form>
+
+  <div class="mb-7 flex flex-wrap gap-2">
+    <a href="{{ url_for('explore', filter='All') }}" class="filter-chip rounded-full px-4 py-2 text-sm font-semibold {% if current_filter == 'All' %}selected{% endif %}">All</a>
+    <a href="{{ url_for('explore', filter='Image') }}" class="filter-chip rounded-full px-4 py-2 text-sm font-semibold {% if current_filter == 'Image' %}selected{% endif %}">Image</a>
+    <a href="{{ url_for('explore', filter='Video') }}" class="filter-chip rounded-full px-4 py-2 text-sm font-semibold {% if current_filter == 'Video' %}selected{% endif %}">Video</a>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {% for p in prompts %}
+      {% include "partials/card.html" %}
+    {% else %}
+      <p class="soft col-span-full py-12 text-center">No prompts match your search.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

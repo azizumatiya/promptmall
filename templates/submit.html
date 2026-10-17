@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Submit Prompt — PromptMall{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+  {% if success %}
+  <div class="surface rounded-2xl p-12 text-center">
+    <div class="mx-auto grid h-16 w-16 place-items-center rounded-full text-white" style="background:linear-gradient(135deg,#FF2E93,#7B2CBF)">
+      <i data-lucide="check" class="h-8 w-8"></i>
+    </div>
+    <h2 class="display mt-6 text-3xl font-bold" style="color:var(--ink)">Submitted for review!</h2>
+    <p class="soft mt-2">Your prompt has been submitted successfully.</p>
+    <a href="{{ url_for('submit') }}" class="pink-btn mt-6 inline-block rounded-xl px-5 py-3 font-semibold">Submit Another</a>
+  </div>
+  {% else %}
+  <h1 class="display text-4xl font-bold sm:text-5xl" style="color:var(--ink)">Share your best prompt.</h1>
+  <p class="soft mt-2">Help the community create something remarkable.</p>
+  <form class="surface mt-8 rounded-2xl p-6 sm:p-8" method="post">
+    <div class="grid gap-5">
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Prompt Title</label>
+        <input name="title" class="form-control" required>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Short Description</label>
+        <textarea name="description" class="form-control min-h-24" required></textarea>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Your Prompt</label>
+        <textarea name="prompt" class="form-control min-h-36" required></textarea>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label class="mb-1.5 block text-sm font-semibold">Category</label>
+          <select name="category" class="form-control">
+            {% for cat in categories %}
+              <option value="{{ cat.name }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-semibold">Prompt Type</label>
+          <select name="type" class="form-control">
+            <option>Image</option>
+            <option>Video</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-semibold">Tags (comma separated)</label>
+        <input name="tags" class="form-control" placeholder="e.g. Cinematic, Neon, Portrait">
+      </div>
+      <button class="pink-btn rounded-xl px-5 py-4 font-semibold" type="submit">Submit Prompt</button>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptHero Clone - AI Prompt Search & Gallery</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1280px) { .masonry-grid { column-count: 4; } }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3">
+                <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-2 rounded-xl text-xl font-black tracking-wider">PH</span>
+                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">PromptHero</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+                <a href="#" class="text-white hover:text-indigo-400 transition">Midjourney</a>
+                <a href="#" class="hover:text-indigo-400 transition">ChatGPT</a>
+                <a href="#" class="hover:text-indigo-400 transition">DALL-E</a>
+                <a href="#" class="hover:text-indigo-400 transition">Stable Diffusion</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-4">
+                <button class="hidden sm:block text-sm font-semibold text-slate-300 hover:text-white px-3 py-2">Log in</button>
+                <button class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition shadow-lg shadow-indigo-600/30">
+                    Submit Prompt
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16 px-4 text-center max-w-4xl mx-auto">
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
+            Search millions of AI prompts
+        </h1>
+        <p class="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+            The world's largest library for AI generated images and prompts. Midjourney, Stable Diffusion, DALL-E & ChatGPT.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="relative max-w-2xl mx-auto shadow-2xl">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+            <input type="text" id="searchInput" placeholder="Search prompts, styles, or concepts..." 
+                class="w-full bg-slate-900 border border-slate-700 rounded-2xl py-4 pl-12 pr-28 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition">
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition">
+                Search
+            </button>
+        </div>
+    </section>
+
+    <!-- Filter Category Pills -->
+    <section class="max-w-7xl mx-auto px-4 mb-8">
+        <div class="flex items-center justify-center space-x-2 overflow-x-auto pb-2 text-sm">
+            <button class="px-4 py-2 rounded-full bg-white text-slate-950 font-semibold shadow">All Prompts</button>
+            <button class="px-4 py-2 rounded-full bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">Portrait</button>
+            <button class="px-4 py-2 rounded-full bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">Anime</button>
+            <button class="px-4 py-2 rounded-full bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">Architecture</button>
+            <button class="px-4 py-2 rounded-full bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">Cyberpunk</button>
+            <button class="px-4 py-2 rounded-full bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition">3D Render</button>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 pb-16">
+        <div class="masonry-grid" id="galleryGrid">
+            
+            <!-- Card 1 -->
+            <div class="masonry-item group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 cursor-pointer shadow-lg hover:shadow-indigo-500/10 transition duration-300" onclick="openModal('Cyberpunk City at Night', 'Futuristic cyberpunk neon city, wet streets, highly detailed, 8k resolution, cinematic lighting --v 5.2', 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80')">
+                <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80" alt="Cyberpunk City" class="w-full h-auto object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-4 flex flex-col justify-end">
+                    <span class="text-xs font-semibold px-2 py-1 bg-indigo-600/80 text-white rounded-md w-max mb-2">Midjourney</span>
+                    <p class="text-xs text-slate-300 line-clamp-2">Futuristic cyberpunk neon city, wet streets, highly detailed, 8k resolution...</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="masonry-item group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 cursor-pointer shadow-lg hover:shadow-indigo-500/10 transition duration-300" onclick="openModal('Astronaut floating in space', 'Hyperrealistic astronaut floating in deep space with galaxy backdrop, golden hour lighting on helmet --ar 16:9', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80')">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80" alt="Astronaut" class="w-full h-auto object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-4 flex flex-col justify-end">
+                    <span class="text-xs font-semibold px-2 py-1 bg-purple-600/80 text-white rounded-md w-max mb-2">DALL-E 3</span>
+                    <p class="text-xs text-slate-300 line-clamp-2">Hyperrealistic astronaut floating in deep space with galaxy backdrop...</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="masonry-item group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 cursor-pointer shadow-lg hover:shadow-indigo-500/10 transition duration-300" onclick="openModal('Minimalist Modern House', 'Architectural photo of a minimalist modern villa in nature, large glass windows, brutalist design --v 6.0', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80')">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Architecture" class="w-full h-auto object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-4 flex flex-col justify-end">
+                    <span class="text-xs font-semibold px-2 py-1 bg-indigo-600/80 text-white rounded-md w-max mb-2">Midjourney</span>
+                    <p class="text-xs text-slate-300 line-clamp-2">Architectural photo of a minimalist modern villa in nature...</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="masonry-item group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 cursor-pointer shadow-lg hover:shadow-indigo-500/10 transition duration-300" onclick="openModal('3D Cute Character', 'Adorable 3D monster character, octane render, soft lighting, pastel colors, clay texture', 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80')">
+                <img src="https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80" alt="3D Art" class="w-full h-auto object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-4 flex flex-col justify-end">
+                    <span class="text-xs font-semibold px-2 py-1 bg-teal-600/80 text-white rounded-md w-max mb-2">Stable Diffusion</span>
+                    <p class="text-xs text-slate-300 line-clamp-2">Adorable 3D monster character, octane render, soft lighting...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Dialog -->
+    <div id="promptModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full overflow-hidden flex flex-col md:flex-row relative shadow-2xl">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 text-slate-400 hover:text-white bg-slate-950/60 p-2 rounded-full">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <!-- Image Area -->
+            <div class="md:w-1/2 bg-slate-950 flex items-center justify-center">
+                <img id="modalImg" src="" alt="Prompt Preview" class="max-h-[70vh] w-full object-contain">
+            </div>
+
+            <!-- Details Area -->
+            <div class="md:w-1/2 p-6 flex flex-col justify-between">
+                <div>
+                    <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">Title</h3>
+                    <p class="text-xs text-slate-400 mb-4">Copy and paste this prompt into your AI model</p>
+                    
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 mb-4 relative">
+                        <p id="modalPromptText" class="text-sm text-slate-300 font-mono">Prompt goes here...</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <button onclick="copyPrompt()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-xl transition flex items-center justify-center space-x-2">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>Copy Prompt</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        function openModal(title, prompt, imgSrc) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalPromptText').innerText = prompt;
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('promptModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('promptModal').classList.add('hidden');
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('modalPromptText').innerText;
+            navigator.clipboard.writeText(promptText);
+            alert('Prompt copied to clipboard!');
+        }
+    </script>
+</body>
+</html>

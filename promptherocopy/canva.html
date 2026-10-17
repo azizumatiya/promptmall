@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+ <head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260828-05-5fe3063","C":{"Abril Fatface":"YACgEZbkUVE,0","Alfa Slab One":"YACgEYS9sJU,0","Anton":"YACgEcYqQ-A,0","Archivo":"YAHO2-t-jNE,0","Arial":"YAGyDvJ_4Ts,0","Bebas Neue":"YACgESME5ew,0","Bricolage Grotesque":"YAFyMcdwzpc,0","Canva Sans":"YAFLd8sKbwc,2","Caveat":"YALBs2ploWQ,0","Comic Sans MS":"YAHO2VMiyZo,0","Cormorant Garamond":"YAFdJhX-538,0","Courier New":"YAGzXiGs0_8,0","DM Sans":"YAD1aU3sLnI,0","DM Serif Display":"YAD1aYG82rc,0","Forum":"YACgEcnnqB4,0","Fraunces":"YAEul-FRQw4,0","Georgia":"YAGzXkO0pEM,0","Helvetica Neue":"YAFcf6CtJfI,0","Impact":"YAFcfnjI7Vk,0","Inter":"YAFdJvSyp_k,3","Iowan Old Style":"YAGNIFa8j9o,0","Jacques Francois":"YAHO2a5g66Q,0","JetBrains Mono":"YAFdJksXcAk,0","Libre Baskerville":"YACgEUFdPdA,0","Manrope":"YAHO2b2feC4,0","Merriweather":"YACgEXvHxxs,0","Montserrat":"YADLjI9qxTA,0","Nunito":"YACgEX8C5Gg,0","Oleo Script":"YACgEQQ14jI,0","Phantom Sans":"YAHO2E8Pb88,0","Playfair Display":"YACgEYmuCJE,0","Poppins":"YAFdJjbTu24,1","Press Start 2P":"YAFyGr-8pmQ,0","Quicksand":"YADWjpfPmdk,0","Raleway":"YACgEVg3xZg,0","Segoe UI":"YAHNdRD1Klw,0","Source Sans 3":"YAG4lO1Mj10,0","Spectral":"YAHO2rVUHIM,0","Times New Roman":"YAGzXW3gftg,0","Times":"YAGzXW3gftg,0","Ubuntu":"YACgERDU--Q,0","Work Sans":"YAGXhLOKv44,0","Yellowtail":"YACgEYG4kG4,0","ui-monospace":"YADlN8CFZ8Q,0","ui-sans-serif":"YACkoN-xg4g,0"}}');</script><script src="/_sdk/50d846425a1e5082.telemetry_sdk.js" integrity="sha512-Otbex+ztlVbcEGql0rXGd/3E3ee/hqAntg6DeuUEMG6pIPbXGOSvZbFZVzknAXi1tH/itQ+ijEhOTr2aWj6CXg=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prompt Gallery</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/b3bf9e8ac58e6ad6.data_sdk.js" integrity="sha512-otc1u9NYq9Ms5Jt//7vmhrrqR5CLPr8Jdgs6741gqniClfLMcfmC+jK/cKuQdhLv6G0esJ/FzaMS9tv0T/vj/Q=="></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #eceff7;
+      --muted: #a5aec3;
+      --line: rgba(229, 232, 244, .13);
+      --panel: #151923;
+      --panel-2: #1b202d;
+      --lime: #d9ff4e;
+      --void: #080a10;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--void); }
+    body { font-family: "DM Sans", sans-serif; color: var(--ink); }
+    button, input, textarea, select { font: inherit; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 3px;
+    }
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(215,255,79,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(215,255,79,.08) 1px, transparent 1px);
+      background-size: 46px 46px;
+    }
+    .noise {
+      background-image: radial-gradient(rgba(255,255,255,.12) .6px, transparent .6px);
+      background-size: 5px 5px;
+      opacity: .12;
+    }
+    .hero-art {
+      filter: saturate(.9) contrast(1.15);
+      mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    }
+    .gallery-card {
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .gallery-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(217,255,78,.55);
+      box-shadow: 0 18px 50px rgba(0,0,0,.3);
+    }
+    .preview {
+      background-position: center;
+      background-size: cover;
+      background-color: #252b3a;
+    }
+    .card-shade { background: linear-gradient(180deg, transparent 38%, rgba(8,10,16,.82)); }
+    .drawer-open { transform: translateX(0) !important; }
+    .veil-open { opacity: 1 !important; pointer-events: auto !important; }
+    .status-show { opacity: 1; transform: translateY(0); }
+    .reveal { animation: rise .55s both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+    @media (max-width: 640px) {
+      .hero-title-size { font-size: clamp(2.9rem, 15vw, 4.8rem); }
+    }
+  </style>
+  <script src="/_sdk/a6de989e8af05ea5.resizing_sdk.js" type="text/javascript" integrity="sha512-cceAQMIleYr/3eg7o5WzN46w0HpgI1sxi+5kDUb7CmTjHEpgBtINDxtOpnNeUtujjui8NG0OSDgUMl0/E2lT2A=="></script>
+ </head>
+ <body data-template-id="__page-root" class="w-full min-h-screen overflow-x-hidden">
+  <header data-template-id="topbar" class="canva-header sticky top-0 z-30 border-b border-white/10 bg-[#080a10]/90 backdrop-blur-xl">
+   <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8" aria-label="Main navigation"><a href="#gallery" class="flex items-center gap-3 no-underline"> <span data-template-id="brand-mark" class="canva-tag grid h-9 w-9 place-items-center rounded-full text-[#080a10]"> <i data-lucide="sparkles" class="h-4 w-4" aria-hidden="true"></i> </span> <span data-template-id="brand-name" class="canva-text text-base font-bold tracking-tight"></span> </a>
+    <div class="flex items-center gap-3"><a data-template-id="nav-browse" class="canva-link hidden rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-white/5 sm:block" href="#gallery"></a> <button id="open-drawer" data-template-id="submit-open-button" type="button" class="canva-button inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold transition hover:brightness-110"> <i data-lucide="plus" class="h-4 w-4" aria-hidden="true"></i> <span>Submit</span> </button>
+    </div>
+   </nav>
+  </header>
+  <main>
+   <section data-template-id="hero-section" class="canva-section relative isolate overflow-hidden border-b border-white/10"><img data-template-id="hero-image" loading="lazy" class="canva-image hero-art absolute inset-0 -z-20 h-full w-full object-cover opacity-45">
+    <div class="hero-grid absolute inset-0 -z-10 opacity-50"></div>
+    <div class="noise absolute inset-0 -z-10"></div>
+    <div class="absolute -right-20 top-8 -z-10 h-72 w-72 rounded-full bg-[#d9ff4e]/15 blur-3xl"></div>
+    <div class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+     <div class="max-w-4xl">
+      <p data-template-id="hero-kicker" class="canva-text mb-5 text-xs font-bold uppercase tracking-[.22em]"></p>
+      <h1 data-template-id="hero-title" class="canva-text hero-title-size max-w-4xl font-['Fraunces'] text-6xl font-semibold leading-[.92] tracking-[-.055em] sm:text-7xl lg:text-8xl"></h1>
+      <p data-template-id="hero-copy" class="canva-text mt-7 max-w-xl text-lg leading-relaxed text-[#c8cedc]"></p>
+      <div class="mt-10 max-w-2xl"><label data-template-id="search-label" class="canva-text sr-only" for="prompt-search"></label>
+       <div class="flex items-center gap-3 rounded-xl border border-white/15 bg-[#10131c]/85 px-4 py-2 shadow-2xl backdrop-blur"><i data-lucide="search" class="h-5 w-5 shrink-0 text-[#d9ff4e]" aria-hidden="true"></i> <input id="prompt-search" data-template-id="prompt-search" class="canva-input w-full bg-transparent py-3 text-base text-white placeholder:text-[#8f98ae] focus:outline-none" type="search" autocomplete="off"> <kbd class="hidden rounded border border-white/15 px-2 py-1 text-xs text-[#9aa3b8] sm:block">⌘ K</kbd>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section data-template-id="filter-section" class="canva-section border-b border-white/10 bg-[#0d1018]">
+    <div class="mx-auto grid max-w-7xl gap-4 px-5 py-5 sm:grid-cols-3 sm:px-8">
+     <div><label data-template-id="category-label" class="canva-text mb-2 block text-xs font-bold uppercase tracking-[.14em]" for="category-filter"></label> <select id="category-filter" data-template-id="category-filter" class="canva-dropdown w-full rounded-lg border border-white/10 bg-[#151923] px-3 py-2.5 text-sm text-white"> <option value="">All categories</option> <option value="Fantasy">Fantasy</option> <option value="Portrait">Portrait</option> <option value="Architecture">Architecture</option> <option value="Fashion">Fashion</option> <option value="Abstract">Abstract</option> <option value="Sci-fi">Sci-fi</option> <option value="Nature">Nature</option> </select>
+     </div>
+     <div><label data-template-id="model-label" class="canva-text mb-2 block text-xs font-bold uppercase tracking-[.14em]" for="model-filter"></label> <select id="model-filter" data-template-id="model-filter" class="canva-dropdown w-full rounded-lg border border-white/10 bg-[#151923] px-3 py-2.5 text-sm text-white"> <option value="">All models</option> <option value="Midjourney">Midjourney</option> <option value="Stable Diffusion">Stable Diffusion</option> <option value="FLUX">FLUX</option> <option value="ChatGPT Image">ChatGPT Image</option> <option value="Sora">Sora</option> </select>
+     </div>
+     <div><label data-template-id="sort-label" class="canva-text mb-2 block text-xs font-bold uppercase tracking-[.14em]" for="sort-filter"></label> <select id="sort-filter" data-template-id="sort-filter" class="canva-dropdown w-full rounded-lg border border-white/10 bg-[#151923] px-3 py-2.5 text-sm text-white"> <option value="new">Newest first</option> <option value="top">Most liked</option> <option value="title">Title A–Z</option> </select>
+     </div>
+    </div>
+   </section>
+   <section id="gallery" class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+     <div>
+      <h2 data-template-id="gallery-title" class="canva-text font-['Fraunces'] text-4xl font-semibold tracking-tight"></h2>
+      <p data-template-id="gallery-hint" class="canva-text mt-2 text-sm text-[#a5aec3]"></p>
+     </div>
+     <p id="result-count" class="text-sm font-semibold text-[#d9ff4e]" aria-live="polite"></p>
+    </div>
+    <div id="prompt-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite"></div>
+    <div id="empty-state" class="mx-auto hidden max-w-lg rounded-2xl border border-dashed border-white/20 bg-[#10131a] px-8 py-16 text-center">
+     <div class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#d9ff4e] text-[#080a10]"><i data-lucide="image-plus" class="h-5 w-5" aria-hidden="true"></i>
+     </div>
+     <h3 data-template-id="empty-title" class="canva-text mt-5 text-xl font-bold"></h3>
+     <p data-template-id="empty-copy" class="canva-text mt-2 text-sm leading-relaxed text-[#a5aec3]"></p>
+    </div>
+   </section>
+  </main>
+  <div id="veil" class="fixed inset-0 z-40 bg-black/65 opacity-0 pointer-events-none transition-opacity" aria-hidden="true"></div>
+  <aside id="drawer" data-template-id="drawer-panel" class="canva-panel fixed right-0 top-0 z-50 flex h-[calc(100*min(var(--vh,1vh),1vh))] w-full max-w-lg translate-x-full flex-col border-l border-white/10 shadow-2xl transition-transform duration-300">
+   <div class="flex items-start justify-between border-b border-white/10 px-6 py-6">
+    <div>
+     <h2 data-template-id="drawer-title" class="canva-text font-['Fraunces'] text-3xl font-semibold"></h2>
+     <p data-template-id="drawer-copy" class="canva-text mt-1 text-sm leading-relaxed text-[#aeb6c7]"></p>
+    </div><button id="close-drawer" type="button" class="rounded-lg p-2 text-[#cbd2df] transition hover:bg-white/10" aria-label="Close submission panel"> <i data-lucide="x" class="h-5 w-5" aria-hidden="true"></i> </button>
+   </div>
+   <form id="prompt-form" class="flex-1 overflow-y-auto px-6 py-6">
+    <div class="space-y-5">
+     <div><label data-template-id="field-title-label" class="canva-text mb-2 block text-sm font-bold" for="entry-title"></label> <input id="entry-title" required maxlength="90" class="w-full rounded-lg border border-white/15 bg-[#0d1018] px-3 py-3 text-white placeholder:text-[#6f788e]" placeholder="e.g. Cathedral above the clouds">
+     </div>
+     <div><label data-template-id="field-image-label" class="canva-text mb-2 block text-sm font-bold" for="entry-image"></label> <input id="entry-image" required type="url" class="w-full rounded-lg border border-white/15 bg-[#0d1018] px-3 py-3 text-white placeholder:text-[#6f788e]" placeholder="https://images.example.com/artwork.jpg">
+      <p class="mt-2 text-xs leading-relaxed text-[#9099ad]">Use a direct HTTPS link to an image you are allowed to share.</p>
+     </div>
+     <div><label data-template-id="field-prompt-label" class="canva-text mb-2 block text-sm font-bold" for="entry-prompt"></label> <textarea id="entry-prompt" required maxlength="2000" rows="6" class="w-full resize-y rounded-lg border border-white/15 bg-[#0d1018] px-3 py-3 text-white placeholder:text-[#6f788e]" placeholder="Describe lighting, subject, materials, composition, camera settings..."></textarea>
+     </div>
+     <div class="grid gap-5 sm:grid-cols-2">
+      <div><label data-template-id="field-category-label" class="canva-text mb-2 block text-sm font-bold" for="entry-category"></label> <select id="entry-category" required class="w-full rounded-lg border border-white/15 bg-[#0d1018] px-3 py-3 text-white"> <option value="Fantasy">Fantasy</option> <option value="Portrait">Portrait</option> <option value="Architecture">Architecture</option> <option value="Fashion">Fashion</option> <option value="Abstract">Abstract</option> <option value="Sci-fi">Sci-fi</option> <option value="Nature">Nature</option> </select>
+      </div>
+      <div><label data-template-id="field-model-label" class="canva-text mb-2 block text-sm font-bold" for="entry-model"></label> <select id="entry-model" required class="w-full rounded-lg border border-white/15 bg-[#0d1018] px-3 py-3 text-white"> <option value="Midjourney">Midjourney</option> <option value="Stable Diffusion">Stable Diffusion</option> <option value="FLUX">FLUX</option> <option value="ChatGPT Image">ChatGPT Image</option> <option value="Sora">Sora</option> </select>
+      </div>
+     </div>
+    </div>
+    <p id="form-status" class="mt-5 min-h-5 text-sm text-[#d9ff4e]" role="status" aria-live="polite"></p>
+    <div class="mt-6 flex gap-3"><button id="save-entry" data-template-id="save-button" type="submit" class="canva-button inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-3 font-bold transition hover:brightness-110"> <i data-lucide="upload" class="h-4 w-4" aria-hidden="true"></i><span>Save</span> </button> <button id="cancel-entry" data-template-id="cancel-button" type="button" class="canva-button rounded-lg px-5 py-3 font-semibold transition hover:brightness-110"></button>
+    </div>
+   </form>
+  </aside>
+  <div id="toast" class="fixed bottom-5 left-1/2 z-[60] -translate-x-1/2 translate-y-4 rounded-full border border-white/15 bg-[#202633] px-5 py-3 text-sm font-semibold text-white opacity-0 shadow-xl transition" role="status" aria-live="polite"></div>
+  <template id="prompt-card-template">
+   <article data-template-id="prompt-card" class="canva-card gallery-card overflow-hidden rounded-xl border border-white/10">
+    <div class="preview relative aspect-[4/3] overflow-hidden">
+     <div class="card-shade absolute inset-0"></div><span data-template-id="prompt-card-category" class="canva-tag absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold"></span> <span data-template-id="prompt-card-model" class="canva-tag absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/35 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur"></span>
+    </div>
+    <div class="p-5">
+     <h3 data-template-id="prompt-card-title" class="canva-text truncate text-lg font-bold"></h3>
+     <p data-template-id="prompt-card-copy" class="canva-text mt-2 line-clamp-3 text-sm leading-relaxed text-[#aeb6c7]"></p>
+     <div class="mt-5 flex items-center justify-between gap-3"><button data-template-id="prompt-card-copy-button" type="button" class="canva-button inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition hover:brightness-110"> <i data-lucide="copy" class="h-4 w-4" aria-hidden="true"></i><span>Copy</span> </button> <button data-template-id="prompt-card-like-button" type="button" class="canva-button inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold transition hover:brightness-110"> <i data-lucide="heart" class="h-4 w-4" aria-hidden="true"></i><span class="like-count"></span> </button>
+     </div>
+    </div>
+   </article>
+  </template>
+  <script src="/_sdk/c6bcadf20ce5820f.editing_sdk.js" integrity="sha512-LVukVCTKnKSxy98w+wCVzDAxVXBG2vy32XblXlmJD9CPFnF2/FVc75CFngl41IdXcX3sVHJc9olw64zrPM/FIA=="></script>
+  <script>
+    const state = { records: [], sdkReady: false };
+    const grid = document.getElementById('prompt-grid');
+    const emptyState = document.getElementById('empty-state');
+    const resultCount = document.getElementById('result-count');
+    const searchInput = document.getElementById('prompt-search');
+    const categoryFilter = document.getElementById('category-filter');
+    const modelFilter = document.getElementById('model-filter');
+    const sortFilter = document.getElementById('sort-filter');
+    const drawer = document.getElementById('drawer');
+    const veil = document.getElementById('veil');
+    const toast = document.getElementById('toast');
+    const formStatus = document.getElementById('form-status');
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('status-show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('status-show'), 2500);
+    }
+
+    function openDrawer() {
+      drawer.classList.add('drawer-open');
+      veil.classList.add('veil-open');
+      document.getElementById('entry-title').focus();
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('drawer-open');
+      veil.classList.remove('veil-open');
+      formStatus.textContent = '';
+    }
+
+    function filteredRecords() {
+      const query = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+      const model = modelFilter.value;
+      const sort = sortFilter.value;
+
+      const records = state.records.filter(record => {
+        const searchable = [record.title, record.prompt_text, record.category, record.model].join(' ').toLowerCase();
+        return (!query || searchable.includes(query)) &&
+          (!category || record.category === category) &&
+          (!model || record.model === model);
+      });
+
+      return records.sort((a, b) => {
+        if (sort === 'top') return (b.likes || 0) - (a.likes || 0);
+        if (sort === 'title') return (a.title || '').localeCompare(b.title || '');
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    }
+
+    function createCard(record) {
+      const fragment = document.getElementById('prompt-card-template').content.cloneNode(true);
+      const card = fragment.querySelector('article');
+      card.dataset.recordId = record.__backendId;
+      updateCard(card, record);
+      return card;
+    }
+
+    function updateCard(card, record) {
+      const preview = card.querySelector('.preview');
+      preview.style.backgroundImage = `url("${String(record.image_url || '').replace(/"/g, '%22')}")`;
+      card.querySelector('[data-template-id="prompt-card-title"]').textContent = record.title || 'Untitled prompt';
+      card.querySelector('[data-template-id="prompt-card-category"]').textContent = record.category || 'Other';
+      card.querySelector('[data-template-id="prompt-card-model"]').textContent = record.model || 'AI model';
+      card.querySelector('[data-template-id="prompt-card-copy"]').textContent = record.prompt_text || '';
+      card.querySelector('.like-count').textContent = record.likes || 0;
+
+      card.querySelector('[data-template-id="prompt-card-copy-button"]').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(record.prompt_text || '');
+          showToast('Prompt copied to clipboard');
+        } catch (error) {
+          showToast('Could not copy this prompt');
+        }
+      };
+
+      card.querySelector('[data-template-id="prompt-card-like-button"]').onclick = async (event) => {
+        const button = event.currentTarget;
+        if (!state.sdkReady) return;
+        button.disabled = true;
+        button.classList.add('opacity-60');
+        const latest = state.records.find(item => item.__backendId === record.__backendId) || record;
+        const result = await window.dataSdk.update({ ...latest, likes: (latest.likes || 0) + 1 });
+        button.disabled = false;
+        button.classList.remove('opacity-60');
+        if (!result.isOk) showToast('Could not save your like. Please try again.');
+      };
+    }
+
+    function renderGallery() {
+      const records = filteredRecords();
+      const currentCards = new Map([...grid.children].map(card => [card.dataset.recordId, card]));
+
+      records.forEach(record => {
+        const existing = currentCards.get(record.__backendId);
+        if (existing) {
+          updateCard(existing, record);
+          currentCards.delete(record.__backendId);
+        } else {
+          grid.appendChild(createCard(record));
+        }
+      });
+
+      currentCards.forEach(card => card.remove());
+      records.forEach(record => {
+        const card = grid.querySelector(`[data-record-id="${CSS.escape(record.__backendId)}"]`);
+        if (card) grid.appendChild(card);
+      });
+
+      emptyState.classList.toggle('hidden', records.length !== 0);
+      resultCount.textContent = `${records.length} ${records.length === 1 ? 'prompt' : 'prompts'}`;
+      lucide.createIcons();
+    }
+
+    const handler = {
+      onDataChanged(data) {
+        state.records = data;
+        renderGallery();
+      }
+    };
+
+    async function initialiseGallery() {
+      const result = await window.dataSdk.init(handler);
+      if (result.isOk) {
+        state.sdkReady = true;
+      } else {
+        formStatus.textContent = 'The gallery could not connect. Please refresh and try again.';
+      }
+    }
+
+    document.getElementById('open-drawer').addEventListener('click', openDrawer);
+    document.getElementById('close-drawer').addEventListener('click', closeDrawer);
+    document.getElementById('cancel-entry').addEventListener('click', closeDrawer);
+    veil.addEventListener('click', closeDrawer);
+
+    [searchInput, categoryFilter, modelFilter, sortFilter].forEach(control => {
+      control.addEventListener('input', renderGallery);
+      control.addEventListener('change', renderGallery);
+    });
+
+    document.addEventListener('keydown', event => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        searchInput.focus();
+      }
+      if (event.key === 'Escape') closeDrawer();
+    });
+
+    document.getElementById('prompt-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!state.sdkReady) {
+        formStatus.textContent = 'Gallery is still connecting. Please try again in a moment.';
+        return;
+      }
+      if (state.records.length >= 999) {
+        formStatus.textContent = 'This gallery has reached its 999 prompt limit. Remove an entry before saving another.';
+        return;
+      }
+
+      const submitButton = document.getElementById('save-entry');
+      const imageUrl = document.getElementById('entry-image').value.trim();
+      if (!/^https:\/\//i.test(imageUrl)) {
+        formStatus.textContent = 'Please use an image link beginning with https://';
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.classList.add('opacity-60');
+      formStatus.textContent = 'Saving your prompt…';
+
+      const result = await window.dataSdk.create({
+        title: document.getElementById('entry-title').value.trim(),
+        image_url: imageUrl,
+        prompt_text: document.getElementById('entry-prompt').value.trim(),
+        category: document.getElementById('entry-category').value,
+        model: document.getElementById('entry-model').value,
+        likes: 0,
+        created_at: new Date().toISOString()
+      });
+
+      submitButton.disabled = false;
+      submitButton.classList.remove('opacity-60');
+
+      if (result.isOk) {
+        document.getElementById('prompt-form').reset();
+        closeDrawer();
+        showToast('Prompt saved to your gallery');
+      } else {
+        formStatus.textContent = 'Your prompt could not be saved. Please try again.';
+      }
+    });
+
+    lucide.createIcons();
+    initialiseGallery();
+  </script>
+ </body>
+</html>
